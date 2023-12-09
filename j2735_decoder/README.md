@@ -2,6 +2,7 @@
 
 **Linux Running**
 
+```text
 Python3 J2735-2023-09-22 PCAP Decoder V1.2.9
 j2735_decoder.py bcdhmo:su:v:BO: <input PCAP files>
         -b        Split BSMs to file by ID
@@ -16,7 +17,7 @@ j2735_decoder.py bcdhmo:su:v:BO: <input PCAP files>
         -B        Use PCAP file base name as base path to output directory
         -O <path> Path to output base directory
          Creates JSON and KML (MAP) files with metadata.txt to <path>/<base>
-
+```
 
 **Windows Running**
 1. Change directoy to j2735_decoder directory
