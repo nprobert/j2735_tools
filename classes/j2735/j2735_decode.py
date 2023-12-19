@@ -14,7 +14,6 @@ import binascii
 from scapy.all import *
 from tqdm import tqdm
 
-from denso.BSMP import BSMP
 from p1609.p1609dot2 import oer_parse_length
 from p1609.p1609dot3 import *
 from j2735 import MessageFrame
@@ -184,43 +183,6 @@ class j2735_decode(j2735_logcore):
         self.parse_wsmp(wsm)
       except:
         pass
-    #
-    # DENSO WSU BSMP
-    # CAMP TOSCo/CACC ports 4200-4202
-    # NTCNA ports 2734-2738
-    #
-    elif port == 2734 or port == 4202:
-      # BSMP broadcase WSU -> * (DWMHWsmObe2PcPort2)
-      self.log_debug("\tWSU BSMP Broadcast")
-      if data[0]==1 and leng==330:  # TXE
-        self.bsmp_tx_packet(data)
-      elif data[0]==2 and leng==358:  # RX
-        self.bsmp_rx_packet(data)
-    elif port == 2735 or port == 4201:
-      # BSMP incomplete MABx2 -> WSU (wsm_pc2obe_port) shouldn't see these
-      self.log_debug("\tWSU BSMP from MABx2 ignored")
-    elif port == 2736 or port == 4200:
-      # BSMP complete WSU -> MABx2 (wsm_obe2pc_port) shouldn't see these
-      self.log_debug("\tWSU BSMP to MABx2 ignored")
-    elif port == 2737 or port == 4300:
-      # CAMP DENSO WSU OTAP, configured to send raw MAP/SPAT only
-      # dotapUDPIPAddress, dotapUDPPortAddress = 4300,
-      # dotapUDPMapOutputEnable, dotapUDPSPaTOutputEnable both set to 1
-      self.log_debug("\tWSU OTAP Raw MAP, SPAT RX")
-      self.raw_rx_packet(data[6:])
-    elif port == 2738:
-      # NTCNA DVI or CAMP V2I-SA CAN (8 bytes)
-      self.log_debug("NTCNA DVI")
-#      self.ntcna_dvi_packet(data)
-    elif port == 4000:
-      self.log_debug("\TOSCo CACC Container (%d)", leng)
-    elif port == 4001:
-      self.log_debug("\TOSCo GNSS Container (%d)", leng)
-    elif port == 4002:
-      self.log_debug("\TOSCo TOSCo Container (%d)", leng)
-    elif port == 40040:
-      self.log_debug("\TOSCo RTCM")
-      self.raw_rx_packet(data)
     #
     # Other UDP port with RX data
     #
