@@ -1,6 +1,7 @@
 **Python J2735 Decoder**
 
 **Linux Running**
+export PYTHONPATH=$PYTHONPATH:../classes:../classes/j2735
 
 ```text
 Python3 J2735-2023-09-22 PCAP Decoder V1.2.9
