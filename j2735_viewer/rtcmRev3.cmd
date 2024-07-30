@@ -2,7 +2,7 @@
 
 rem type CON > data.rtcm3
 
-SET CONVBIN="rtklib_2.4.2\bin\convbin.exe"
+SET CONVBIN="RTKLIB_bin\bin\convbin.exe"
 
 IF EXIST %CONVBIN% (
   echo RTKlib convbin

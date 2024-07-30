@@ -1,24 +1,34 @@
 **Python J2735 Decoder**
 
-**Linux Running**
-export PYTHONPATH=$PYTHONPATH:../classes:../classes/j2735
+**Python3 Package Requirements**
+Python packages required: json, pycrate, pyside2, scapy
 
-```text
-Python3 J2735-2023-09-22 PCAP Decoder V1.2.9
-j2735_decoder.py bcdhmo:su:v:BO: <input PCAP files>
-        -b        Split BSMs to file by ID
-        -c        Converting BSM enabled
-        -d        Debugging enabled to debug.txt
-        -h        Help
-        -m        Binary MAP output in J2735 UPER format
-        -o <offs> UDP offset to data in bytes
-        -s        Split MAPs/SPATs to file by ID in JSON
-        -u <port> UDP port
-        -v vid    BSMs extracted by vehicle id
-        -B        Use PCAP file base name as base path to output directory
-        -O <path> Path to output base directory
-         Creates JSON and KML (MAP) files with metadata.txt to <path>/<base>
-```
+**Linux Installation**
+Might have to use pip3:
+1. sudo -H pip install --upgrade pip
+2. sudo -H pip install json, numpy, pycrate, pyside2, scapy, virtualenv, virtualenvwrapper
+
+Add classes and classes/j2735 to your PYTHONPATH: export PYTHONPATH=:./classes:./classes/j2735
+
+**Linux Running**
+
+./j2735_decoder.py [-d] file.pcap
+./j2735_decoder.py [-d] file.log
+
+Add -d for debugging output
+
+This will create a subdirectory called "post" where the output data will be found.
+
+**Windows Installation**
+
+Using PowerShell Admin:
+1. python -m pip install --upgrade pip
+2. python -m pip install numpy, pyside2, scapy, virtualenv, virtualenvwrapper
+
+Download and install pycrate:
+1. git clone https://github.com/P1sec/pycrate
+2. cd pycrate
+3. python setup.py install
 
 **Windows Running**
 1. Change directoy to j2735_decoder directory

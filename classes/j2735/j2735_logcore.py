@@ -17,8 +17,8 @@ from utils.logging import LOGlog, JSONlog, log_genname
 from pykml.factory import KML_ElementMaker as KML
 from lxml import etree
 
-J2735_FILE_VERSION = "2023-09-22"
-J2735_TOOL_VERSION = "1.2.9"
+J2735_FILE_VERSION = "2024-05-28"
+J2735_TOOL_VERSION = "2.0.3"
 
 class j2735_logcore:
   def __init__(self):
@@ -73,8 +73,6 @@ class j2735_logcore:
     self.tx_count = 0
     self.rx_count = 0
     self.rx_counts = [0] * 128
-    self.bsmp_tx_count = 0
-    self.bsmp_rx_count = 0
     self.bsm_tx_count = 0
     self.bsm_rx_count = 0
     self.map_tx_count = 0
@@ -384,7 +382,7 @@ class j2735_logcore:
 
     if self.msg_id == MESSAGE_BSM:
       id = int(self.msg['value']['coreData']['id'], 16) & 0xffff
-      self.log_debug("\tJ2735 BSM TX Packet")
+      self.log_debug("\tJ2735 BSM TX Packet: %u" %(id))
       if self.convert:
         bsm = j2735_bsm()
         bsm.message(self.msg)
@@ -394,10 +392,12 @@ class j2735_logcore:
       self.tx_bsm = self.msg
       self.bsm_tx_count += 1
     elif self.msg_id == MESSAGE_MAP:
-       self.log_debug("\tJ2735 MAP TX Packet")
-       self.map_tx_count += 1
+      id = self.msg['value']['intersections'][0]['id']['id']
+      self.log_debug("\tJ2735 MAP TX Packet: %u" % (id))
+      self.map_tx_count += 1
     elif self.msg_id == MESSAGE_SPAT:
-      self.log_debug("\tJ2735 SPAT TX Packet")
+      id = self.msg['value']['intersections'][0]['id']['id']
+      self.log_debug("\tJ2735 SPAT TX Packet: %u" % (id))
       self.spat_tx_count += 1
     else:
       self.log_debug("\tJ2735 Other TX Packet %u: %s" % (self.msg_id, str(binascii.hexlify(tx))))
@@ -430,7 +430,7 @@ class j2735_logcore:
 
     if self.msg_id == MESSAGE_BSM:
       id = int(self.msg['value']['coreData']['id'], 16) & 0xffff
-      self.log_debug("\tJ2735 BSM RX Packet")
+      self.log_debug("\tJ2735 BSM RX Packet: %u" %(id))
       if self.bsm_hv_id and self.bsm_hv_id == id:
         data['Direction'] = 'TX'
       if self.convert:
@@ -497,73 +497,12 @@ class j2735_logcore:
       self.raw_rx_packet(rx[16:])
 
 #
-# BSMP packets (DENSO, CAMP and NTCNA only)
-#
-  def bsmp_tx_packet(self, txe):
-    self.count += 1
-    self.tx_count += 1
-    self.bsmp_tx_count += 1
-    self.is_tx = 1
-    self.msg_id = MESSAGE_BSM
-
-    # unpack TXE header and BSM
-    bsmp = BSMP()
-    bsmp.convert = self.convert
-    bsmp.decode_txe(txe[0:4])
-    bsmp.decode_bsmp(txe[4:])
-    self.timestamp =  int(bsmp.get_ts())
-
-    # encode for logging
-    data = bsmp.encode_bsm()
-    self.msg = {'messageId': 20, 'value': data}
-    data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_id': MESSAGE_BSM,
-            'P1609dot2_flag': self.dot2_signed, 'Version': J2735_FILE_VERSION, 'Message': self.msg}
-    self.tx_bsm = self.msg
-    self.log.write(data)
-
-  def bsmp_rx_packet(self, rx):
-    self.count += 1
-    self.rx_count += 1
-    self.bsmp_rx_count += 1
-    self.is_tx = 0
-    self.msg_id = MESSAGE_BSM
-
-    # unpack SIB header and BSM
-    bsmp = BSMP()
-    bsmp.convert = self.convert
-    bsmp.decode_sib(rx[0:32])
-    bsmp.decode_bsmp(rx[32:])
-    self.timestamp =  int(bsmp.get_ts())
-
-    # encode for logging
-    data = bsmp.encode_bsm()
-    self.msg = {'messageId': 20, 'value': data}
-    data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_id': MESSAGE_BSM,
-            'P1609dot2_flag': self.dot2_signed, 'Version': J2735_FILE_VERSION, 'Message': self.msg}
-    self.rx_bsm = self.msg
-    self.log.write(data)
-
-  def ntcna_dvi_packet(self, data):
-    data = bytearray(data)
-    dvi = DVI()
-    if data[0] >= 32:
-      # new JSON format
-      msg = dvi.decode_json(data)
-    else:
-      dvi.decode_old(bytearray(data))
-      msg = dvi.dump_data()
-    data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_type': 'DVI', 'Message': self.msg}
-    data['Message'] = msg
-    self.log.write(data)
-
-#
 # reports and stats
 #
   def print_report(self):
     self.meta.write("J2735 Packet Summary")
     self.meta.write("=========================================")
-    if self.bsmp_tx_count or self.bsmp_rx_count:
-      self.meta.write("BSMP   RX, TX packets = %7u, %7u" % (self.bsmp_rx_count, self.bsmp_tx_count))
+
     if self.bsm_tx_count or self.bsm_rx_count:
       self.meta.write("BSM    RX, TX packets = %7u, %7u" % (self.bsm_rx_count, self.bsm_tx_count))
     for i in range(MESSAGE_MAP, MESSAGE_LAST):

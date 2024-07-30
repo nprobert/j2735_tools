@@ -11,11 +11,12 @@ import sys
 import struct
 import json
 import binascii
+import re
 from scapy.all import *
 from tqdm import tqdm
 
-from p1609.p1609dot2 import oer_parse_length
-from p1609.p1609dot3 import *
+from p1609dot2.dot2oer import *
+from p1609dot3.p1609dot3 import *
 from j2735 import MessageFrame
 from j2735_bsm import *
 from utils.logging import JSONlog, log_genname
@@ -151,10 +152,10 @@ class j2735_decode(j2735_logcore):
     data = buff[8:]
     leng = len(data)
 
-    self.log_debug("\tParsing UDP Layer (%u):" % len(pkt))
+    self.log_debug("\tParsing UDP Layer port %d (%u):" % (port, len(pkt)))
 
     #
-    # Vendor
+    # OBU Vendor
     #
     if port == 5560:
       # Panasonic
@@ -184,9 +185,29 @@ class j2735_decode(j2735_logcore):
       except:
         pass
     #
+    # RSU
+    #
+    elif port == 1516:
+      # IFM
+      self.log_debug("\tRSU IFM")
+      ifm = data.splitlines()
+      is_spat = 0
+      for line in ifm:
+        line = line.decode("utf-8")
+        if line[:1] == "#":
+            continue
+        (key,val) = line.split("=")
+        if (key == "Type" and val == "SPAT"):
+          is_spat = 1
+        elif (key == "Tx Channel"):
+          self.chan_no = int(val)
+        elif (key == "Payload" and is_spat):
+          spat = binascii.unhexlify(val)
+          self.raw_tx_packet(spat)
+    #
     # Other UDP port with RX data
     #
-    elif port == 1034 and data[0] == 0xcd:
+    elif (port == 1034 or port == 6053 or port == self.udp_port) and data[0] == 0xcd:
       # Signal controller dump to Battelle's TSCBM format (for CTIC T&V)
       self.log_debug("\tBattelle TSCBM (%d)" % leng)
       logfile = os.path.join(self.logpath, "tscbm.json")
@@ -535,20 +556,20 @@ class j2735_decode(j2735_logcore):
       self.log_debug("Raw frame with IPv4 + UDP")
       self.parse_udp(pkt_data[20:])
 
+    # ethernet
+    elif pkt_data[12] == 0x08 and pkt_data[13] == 0x00:
+      # IPv4 UDP
+      self.log_debug("Ethernet frame")
+      self.parse_ethernet(pkt_data)
+    elif pkt_data[0] == 0xff or pkt_data[0] == 0x00:
+      # IPv4/6, UDP
+      self.log_debug("Ethernet frame")
+      self.parse_ethernet(pkt_data)
+
     # wireless
     elif pkt_data[0] == 0x88:
       self.log_debug("Wireless 802.11 frame")
       self.parse_802_11(pkt_data)
-
-    # ethernet
-    elif pkt_data[0] == 0xff or pkt_data[0] == 0x00:
-      # IPv4/6, UDP
-      self.log_debug("Ethernet frame")
-      self.parse_ethernet(pkt_data)      
-    elif pkt_data[12] == 0x08 and pkt_data[13] == 0x00:
-      # UDP (Wistron)
-      self.log_debug("Ethernet frame")
-      self.parse_ethernet(pkt_data)
 
     # fallback    
     else:
