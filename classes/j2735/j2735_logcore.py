@@ -11,8 +11,6 @@ import threading
 import json
 import shutil
 
-from ntcna.DVI import DVI
-from denso.BSMP import BSMP
 from j2735_mf import *
 from j2735_bsm import *
 from utils.logging import LOGlog, JSONlog, log_genname

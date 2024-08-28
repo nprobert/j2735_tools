@@ -15,7 +15,6 @@ import re
 from scapy.all import *
 from tqdm import tqdm
 
-from denso.BSMP import BSMP
 from p1609dot2.dot2oer import *
 from p1609dot3.p1609dot3 import *
 from j2735 import MessageFrame

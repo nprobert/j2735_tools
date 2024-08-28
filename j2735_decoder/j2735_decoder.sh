@@ -2,4 +2,4 @@
 
 export PYTHONPATH=$PYTHONPATH:../classes:../classes/j2735
 
-./j2735_decoder.py
+./j2735_decoder.py $@
