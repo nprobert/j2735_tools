@@ -151,7 +151,6 @@ def main(argv):
       sys.exit()
  
     decode.print_report()
-    print("Processed %u/%u useful packets\n" % (decode.count, decode.total))
 
 def signal_handler(signal, frame):
   # your code here
