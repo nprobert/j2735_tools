@@ -42,5 +42,5 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 Check out the Wireshark-J2735: https://github.com/nprobert/Wireshark-J2735
 
 **TODO**
-Docker version???
-Need to handle MAP absolute node points (not recommended), convert to relative offsets.
+1. Docker version???
+2. Need to handle MAP absolute node points (not recommended), convert to relative offsets.
