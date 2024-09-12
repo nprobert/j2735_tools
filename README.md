@@ -9,9 +9,6 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 2. Includes QT6 and rtklib
 3. ./packages/packages.sh
 
-**Windows Runtime Installation** Installation:
-1. Use provided executables in j2735_decoder/dist and j2735_viewer/dist directories
-
 **Decoder**
 1. Linux shell scripts provided
 2. Environment setup in shell script for your PYTHONPATH: 'export PYTHONPATH=:../classes:../classes/j2735'
