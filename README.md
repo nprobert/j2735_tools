@@ -34,8 +34,13 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 2. Invokes PyInstaller to build .exe (all prepacked and wrapped up) in j2735_decoder and j2735_viewer
 3. .\win-build.cmd
 
+**Windows Binaries** (Built with PyInstaller)
+1. https://v2x.probestar.com/j2735_tools/
+2. User=j2735, password=pcap_decoder
+
 **Wireshark**
 Check out the Wireshark-J2735: https://github.com/nprobert/Wireshark-J2735
 
 **TODO**
+Docker version???
 Need to handle MAP absolute node points (not recommended), convert to relative offsets.
