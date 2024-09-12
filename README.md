@@ -26,8 +26,8 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 **Windows Development Installation**
 1. Install Python3.11 from here https://www.python.org/downloads/
 2. Only just started using Python 3.12 and tested under Linux, but not Windows
-2. .\packages\packages.cmd
-3. Windows, you'll need to download the free version from https://www.qt.io/product/qt6 and install that.
+3. .\packages\packages.cmd
+4. Windows, you'll need to download the free version from https://www.qt.io/product/qt6 and install that.
 
 **Windows Building**  (uses PyInstaller for Windows .exe build)
 1. WIndows .cmd files provided for testing
@@ -35,12 +35,11 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 3. .\win-build.cmd
 
 **Windows Binaries** (Built with PyInstaller)
-1. https://v2x.probestar.com/j2735_tools/
-2. User=j2735, password=pcap_decoder
+* https://v2x.probestar.com/j2735_tools/ (User=j2735, password=pcap_decoder)
 
 **Wireshark**
 Check out the Wireshark-J2735: https://github.com/nprobert/Wireshark-J2735
 
 **TODO**
-1. Docker version???
-2. Need to handle MAP absolute node points (not recommended), convert to relative offsets.
+* Docker version???
+* Need to handle MAP absolute node points (not recommended), convert to relative offsets.
