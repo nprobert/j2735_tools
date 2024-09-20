@@ -18,7 +18,7 @@ from utils.logging import LOGlog, JSONlog, log_genname
 from pykml.factory import KML_ElementMaker as KML
 from lxml import etree
 
-J2735_FILE_VERSION = "2024-05-28"
+J2735_FILE_VERSION = "2024-09-16"
 J2735_TOOL_VERSION = "2.0.4"
 
 class j2735_logcore:
