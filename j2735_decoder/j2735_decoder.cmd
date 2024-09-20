@@ -1,3 +1,3 @@
 set PYTHONPATH=D:\ProbeStar\Pynomicon\classes;d:\NTCNA\PyVehicle\classes;d:\NTCNA\PyVehicle\classes\j2735
 
-python .\j2735_decoder.py
+python .\j2735_decoder.py %*
