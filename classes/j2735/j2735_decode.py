@@ -191,20 +191,22 @@ class j2735_decode(j2735_logcore):
       # IFM
       self.log_debug("\tRSU IFM")
       ifm = data.splitlines()
+      is_map = 0
       is_spat = 0
       for line in ifm:
         line = line.decode("utf-8")
         if line[:1] == "#":
             continue
         (key,val) = line.split("=")
-        if (key == "Type" and val == "SPAT"):
+        if (key == "Type" and val == "MAP"):
+          is_map = 1
+        elif (key == "Type" and val == "SPAT"):
           is_spat = 1
         elif (key == "Tx Channel"):
           self.chan_no = int(val)
-        elif (key == "Payload" and is_spat):
-          spat = binascii.unhexlify(val)
-          self.raw_tx_packet(spat)
-          self.spat_tx_count += 1
+        elif (key == "Payload" and (is_map or is_spat)):
+          data = binascii.unhexlify(val)
+          self.raw_tx_packet(data)
     #
     # DENSO WSU BSMP/OTAP
     # CAMP TOSCo/CACC ports 4200-4202
