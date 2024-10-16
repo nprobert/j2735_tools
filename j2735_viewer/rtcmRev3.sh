@@ -7,11 +7,9 @@ if [ -x /usr/bin/convbin ]; then
   echo "RTKlib convbin"
   echo "=============="
   mkdir -p logs
-  rm -f logs/*
   /usr/bin/convbin -d logs data.rtcm3 2> rtcm3.err
   if [ -f logs/data.obs ]; then
     cat logs/data.obs
-#    cat logs/data.sbs
   fi
   echo "=============="
   rm rtcm3.err

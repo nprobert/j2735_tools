@@ -811,7 +811,7 @@ class ViewerWindow(MainWindow):
           msg_str = "TIM/RSM/RWM"
           if self.chkTIM.isChecked():
             match = 1
-        elif msg_id == MESSAGE_PSM or msd_id == MESSAGE_PSM2:
+        elif msg_id == MESSAGE_PSM or msg_id == MESSAGE_PSM2:
           msg_str = "PSM/PSM2"
           if self.chkPSM.isChecked():
             match = 1
@@ -825,7 +825,7 @@ class ViewerWindow(MainWindow):
             match = 1
         else:
           if msg_id >= j2735_min and msg_id < j2735_max:
-            msg_str = j2735_names[msg_id]
+            msg_str = j2735_names[msg_id-j2735_min]
           else:
             msg_str = str(msg_id)
           # add check for others
