@@ -5,9 +5,9 @@ cat > data.rtcm2
 # RTKlib
 if [ -x /usr/bin/convbin ]; then
   echo "RTKlib convbin"
-  echo "=============="
+  echo "--------------"
   mkdir -p logs
-  /usr/bin/convbin -d logs data.rtcm2 2> rtcm2.err
+  /usr/bin/convbin -r rtcm2 -d logs data.rtcm2 2> rtcm2.err
   if [ -f logs/data.obs ]; then
     cat logs/data.obs
   fi
@@ -18,7 +18,7 @@ fi
 # GPSd
 if [ -x /usr/bin/gpsdecode ]; then
   echo "gpsdecode"
-  echo "========="
+  echo "---------"
   /usr/bin/gpsdecode < data.rtcm2
   echo "========="
 fi

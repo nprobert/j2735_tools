@@ -547,6 +547,7 @@ class ViewerWindow(MainWindow):
         numrec += 1
         inp = binascii.unhexlify(rec)
         cmd = msg['value']['rev']
+        hdr = "========\nhex data\n--------\n" + rec + "\n========\n"
         if win:
   	    # write the data to a file
           if cmd == "rtcmRev2":
@@ -557,14 +558,12 @@ class ViewerWindow(MainWindow):
           f.write(inp)
           f.close()
           cmd = cmd + ".cmd"
-          out = subprocess.check_output(cmd.split(), shell=True).decode()
+          out = hdr + subprocess.check_output(cmd.split(), shell=True).decode()
         else:
           cmd = "./" + cmd + ".sh"
           process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
           out = process.communicate(inp)
-          out = bytes.decode(out[0])
-        if out == "":
-          out = rec + "\n"
+          out = hdr + bytes.decode(out[0])
         txt = txt + out
       if numrec == 0:
         txt += "RTCM Message is missing record data!"
