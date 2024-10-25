@@ -16,6 +16,7 @@ import subprocess
 from struct import unpack
 from datetime import datetime
 import pynmea2
+from pyrtcm import RTCMReader
 
 from PySide6.QtGui import *
 from PySide6 import QtCore, QtWidgets
@@ -546,25 +547,13 @@ class ViewerWindow(MainWindow):
       for rec in msg['value']['msgs']:
         numrec += 1
         inp = binascii.unhexlify(rec)
-        cmd = msg['value']['rev']
-        hdr = "========\nhex data\n--------\n" + rec + "\n========\n"
-        if win:
-  	    # write the data to a file
-          if cmd == "rtcmRev2":
-            file = "data.rtcm2"
-          else:
-            file = "data.rtcm3"
-          f = open(file, "wb")
-          f.write(inp)
-          f.close()
-          cmd = cmd + ".cmd"
-          out = hdr + subprocess.check_output(cmd.split(), shell=True).decode()
-        else:
-          cmd = "./" + cmd + ".sh"
-          process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-          out = process.communicate(inp)
-          out = hdr + bytes.decode(out[0])
-        txt = txt + out
+        hdr = "==============\nRTCM Record #" + str(numrec) + "\n"
+        hdr += "--- hex data ---\n" + rec + "\n"
+
+        msg = RTCMReader.parse(inp)
+        out = "--- RTCM decode ---\n" + str(msg) + "\n"
+
+        txt = txt + hdr + out
       if numrec == 0:
         txt += "RTCM Message is missing record data!"
     else:

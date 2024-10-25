@@ -163,7 +163,7 @@ class j2735_decode(j2735_logcore):
       self.parse_j2735(data)
     elif port == 9000 or port == 9001:
       # Panasonic
-      self.log_debug("\tCohda C-V2X (Panasonic)")
+      self.log_debug("\tCohda C-V2X")
       if (port == 9000):
         self.is_tx = 0
       else:
@@ -219,22 +219,12 @@ class j2735_decode(j2735_logcore):
         self.bsmp_tx_packet(data)
       elif data[0]==2 and leng==358:  # RX
         self.bsmp_rx_packet(data)
-    elif port == 2735 or port == 4201:
-      # BSMP incomplete MABx2 -> WSU (wsm_pc2obe_port) shouldn't see these
-      self.log_debug("\tWSU BSMP from MABx2 ignored")
-    elif port == 2736 or port == 4200:
-      # BSMP complete WSU -> MABx2 (wsm_obe2pc_port) shouldn't see these
-      self.log_debug("\tWSU BSMP to MABx2 ignored")
     elif port == 2737 or port == 4300:
       # CAMP DENSO WSU OTAP, configured to send raw MAP/SPAT only
       # dotapUDPIPAddress, dotapUDPPortAddress = 4300,
       # dotapUDPMapOutputEnable, dotapUDPSPaTOutputEnable both set to 1
       self.log_debug("\tWSU OTAP Raw MAP, SPAT RX")
       self.raw_rx_packet(data[6:])
-#    elif port == 2738:
-      # NTCNA DVI or CAMP V2I-SA CAN (8 bytes)
-#      self.log_debug("NTCNA DVI")
-#      self.ntcna_dvi_packet(data)
     #
     # Other UDP port with RX data
     #

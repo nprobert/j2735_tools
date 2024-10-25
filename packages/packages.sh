@@ -16,7 +16,7 @@ sudo apt-get -y --ignore-missing install canmatrix-utils python3-canmatrix
 sudo apt-get -y --ignore-missing install python3-numpy python3-pandas python3-plotly python3-scipy
 sudo apt-get -y --ignore-missing install rtklib rtklib-qt libasound2-dev python3-tqdm
 sudo apt-get -y --ignore-missing install gpsd libgps-dev python3-gps python3-gpxpy gpsbabel
-sudo apt-get -y --ignore-missing install python3-cycler python3-kiwisolver
+sudo apt-get -y --ignore-missing install python3-cycler python3-kiwisolver python3-websockets
 if [ $mjn -lt 12 ]; then
   sudo apt-get -y remove python3-matplotlib
   python3 -m pip install --upgrade pip
@@ -32,11 +32,11 @@ echo "Python 3 modules:"
 if [ $mjn -lt 12 ]; then
   p1="devscripts pyinstaller"
   p2="matplotlib simpleaudio"
-  p3="maidenhead pykml"
+  p3="maidenhead pyrtcm pykml"
 else
   p1="devscripts"
   p2="simpleaudio"
-  p3="maidenhead"
+  p3="maidenhead pyrtcm"
 fi
 p4="pyside6"
 p5="pycrate"
