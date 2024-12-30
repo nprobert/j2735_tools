@@ -69,6 +69,7 @@ class j2735_decode(j2735_logcore):
       content &= 0x07
       if content == 0:
         # unsecured
+        self.dot2_signed = 0
         (val, leng) = oer_parse_length(pkt[index:])
         self.log_debug("\tUnsecured (%u)" % (leng))
         index += leng
@@ -88,6 +89,7 @@ class j2735_decode(j2735_logcore):
   def parse_p1609(self, pkt):
     self.log_debug("IEEE 1609.2 Layer (%u):" % (len(pkt)))
     self.dot2_signed = 0
+    self.signed_count = 0
     self._parse_p1609(pkt)
 
 ###############################################################################
@@ -272,14 +274,15 @@ class j2735_decode(j2735_logcore):
   # WSMP layer
   #
   def parse_wsmp(self, pkt):
-    self.log_debug("WSMP Layer (%u):" % len(pkt))
-
     extver = pkt[0]
 #    subtype = extver >> 4
     option = (extver & 0b00001000) >> 3
     extver = extver & 0x07
 
+    self.log_debug("WSMP Layer V%d (%u):" % (extver, len(pkt)))
+
     # WSMP v3 only  
+    self.wsmp_layer = extver
     if extver != 3:
       return
     index = 1
