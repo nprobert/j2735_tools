@@ -4,9 +4,9 @@
 **Python3 Packages**
 Python packages required: json, pycrate, pyside6, scapy, ...
 
-**Linux Development/Runtime Installation** includes QT6 and rtklib):
+**Linux Development/Runtime Installation**:
 1. Debian based Linux only (Kali, Ubuntu, ...)
-2. Includes QT6 and rtklib
+2. Includes QT6
 3. ./packages/packages.sh
 
 **Decoder**
@@ -38,5 +38,6 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 Check out the Wireshark-J2735: https://github.com/nprobert/Wireshark-J2735
 
 **TODO**
+* Need to work on venv
 * Docker version???
 * Need to handle MAP absolute node points (not recommended), convert to relative offsets.
