@@ -7,7 +7,6 @@ from struct import unpack
 from time import time
 import threading
 
-from denso.BSMP import BSMP
 from j2735_mf import j2735_mf
 from utils.logging import JSONlog, log_genname
 
@@ -20,7 +19,6 @@ raw_port = 2730
 hdr_port = 2731
 bsm_rx_port = 9000  # All J2735 RX
 bsm_tx_port = 9001  # BSM J2735 TX only
-bsmp_port = 2734    # From WSU, don't use 2735 or 2736
 otap_port = 2737
 dvi_port = 2738
 pcap1_port = 8023
@@ -41,8 +39,6 @@ class j2735_logger(j2735_logcore):
     self.sock1 = 0
     self.sock2 = 0
     self.sock3 = 0
-    self.sock4 = 0
-    self.sock7 = 0
     self.sock8 = 0
     self.sock23 = 0
     self.sock24 = 0
@@ -56,8 +52,6 @@ class j2735_logger(j2735_logcore):
     self.thread1 = 0
     self.thread2 = 0
     self.thread3 = 0
-    self.thread4 = 0
-    self.thread7 = 0
     self.thread8 = 0
     self.thread23 = 0
     self.thread24 = 0
@@ -151,14 +145,6 @@ class j2735_logger(j2735_logcore):
 
       self.socks = [self.sock2, self.sock3, self.sock8]
     elif obu_flag & 2:
-      # DENSO WSU specific
-      self.sock4 = socket(AF_INET, SOCK_DGRAM)
-      self.sock4.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-      self.sock4.bind(('', bsmp_port))   # BSMP Broadcast
- 
-      self.sock7 = socket(AF_INET, SOCK_DGRAM)
-      self.sock7.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-      self.sock7.bind(('', otap_port))   # OTAP Packet
       
       self.sock23 = socket(AF_INET, SOCK_DGRAM)
       self.sock23.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -168,7 +154,7 @@ class j2735_logger(j2735_logcore):
       self.sock24.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
       self.sock24.bind(('', pcap2_port))   # PCAP Packet
 
-      self.socks = [self.sock4, self.sock7, self.sock23, self.sock24]
+      self.socks = [self.sock23, self.sock24]
 
   def close_sockets(self):
     for i in self.socks:
@@ -189,8 +175,6 @@ class j2735_logger(j2735_logcore):
       self.thread1 = threading.Thread(target=self.header_child)
       self.thread2 = threading.Thread(target=self.bsm_tx_child)
       self.thread3 = threading.Thread(target=self.bsm_rx_child)
-      self.thread4 = threading.Thread(target=self.bsmp_child)
-      self.thread7 = threading.Thread(target=self.otap_child)
       self.thread8 = threading.Thread(target=self.dvi_child)
       self.thread23 = threading.Thread(target=self.pcap1_child)
       self.thread24 = threading.Thread(target=self.pcap2_child)
@@ -205,8 +189,6 @@ class j2735_logger(j2735_logcore):
       self.thread8.start()
       self.threads = [self.thread2, self.thread3, self.thread8]
     elif obu_flag & 2:
-      self.thread4.start()
-      self.thread7.start()
       self.thread23.start()
       self.thread24.start()
       self.threads = [self.thread4, self.thread7, self.thread23, self.thread24]
@@ -281,42 +263,6 @@ class j2735_logger(j2735_logcore):
       try:
         self.sock3.settimeout(0.5)
         data, addr = self.sock3.recvfrom(2048)
-        self.timestamp = int(time() * 1000)
-        self.raw_rx_packet(data)
-      except socket.timeout:
-        pass
-      except Exception as e:
-        print (e)
-        break
-
-  def bsmp_child(self):
-    while self.running:
-      try:
-        self.sock4.settimeout(0.5)
-        data, addr = self.sock4.recvfrom(2048)
-
-        # BSMP Packets from WSU
-        msg = data[0]
-        if msg==1 and len(data)==330:  # TXE
-          self.bsmp_tx_packet(data)
-        elif msg==2 and len(data)==358:  # RX
-          self.bsmp_rx_packet(data)
-      except socket.timeout:
-        pass
-      except Exception as e:
-        print (e)
-        break
-
-  def otap_child(self):
-    while self.running:
-      # OTAP or J2735 MAP+SPAT+RTCM packet from WSU
-      self.sock7.settimeout(0.5)
-      data, addr = self.sock7.recvfrom(2048)
-      self.sock7.sendto(data,('192.168.1.10', 2738))   # -> MABX
-
-      try:
-        self.sock7.settimeout(0.5)
-        data, addr = self.sock7.recvfrom(2048)
         self.timestamp = int(time() * 1000)
         self.raw_rx_packet(data)
       except socket.timeout:

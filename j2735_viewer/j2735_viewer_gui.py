@@ -823,6 +823,8 @@ class ViewerWindow(MainWindow):
           continue
         self.indexes.append(index)
   
+        # layers
+        wsmp = int(row['WSMP_version'])
         dot2 = int(row['P1609dot2_flag'])
         if dot2 == 0:
           dot2 = "unsigned"
@@ -833,7 +835,7 @@ class ViewerWindow(MainWindow):
         else:
           dot2 = "error"
   
-        line = "%13u %2s %4s %6s %s" %(timestamp, direction, msg_str, id, dot2)
+        line = "%13u %2s %4s %6s wsmp=%d dot2=%s" %(timestamp, direction, msg_str, id, wsmp, dot2)
         self.listWidget.addItem(line)
       elif 'Message_type' in row:
         msg_type = row['Message_type']
