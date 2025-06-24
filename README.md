@@ -18,7 +18,6 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 2. Environment setup in shell script for your PYTHONPATH: 'export PYTHONPATH=:../classes:../classes/j2735'
 3. Open .json files, filter by type
 4. Can be slow for large JSON files
-5. Viewing RTCM messages requires RTILIB, download for Windows here https://rtklib.com/ and unpack under j2735_tools
 
 **Windows Development Installation**
 1. Install Python3.12 from here https://www.python.org/downloads/
