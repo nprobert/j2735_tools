@@ -1,5 +1,6 @@
 # j2735_tools
 **Python3 based V2X PCAP Decoder to JSON Converter**
+Used for CAMP TOSCo, CI, CTI T&V Projects for MAP/SPAT Analysis.  JSON is importable to Anaconda/Conda for further analysis.
 
 **Python3 Packages**
 Python packages required: json, pycrate, pyside6, scapy, ...
