@@ -21,10 +21,9 @@ Python packages required: json, pycrate, pyside6, scapy, ...
 5. Viewing RTCM messages requires RTILIB, download for Windows here https://rtklib.com/ and unpack under j2735_tools
 
 **Windows Development Installation**
-1. Install Python3.11 from here https://www.python.org/downloads/
-2. Only just started using Python 3.12 and tested under Linux, but not Windows
-3. .\packages\packages.cmd
-4. Windows, you'll need to download the free version from https://www.qt.io/product/qt6 and install that.
+1. Install Python3.12 from here https://www.python.org/downloads/
+2. .\packages\packages.cmd
+3. Windows, you'll need to download the free version from https://www.qt.io/product/qt6 and install that.
 
 **Windows Building**  (uses PyInstaller for Windows .exe build)
 1. WIndows .cmd files provided for testing
