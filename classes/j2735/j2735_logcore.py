@@ -19,7 +19,7 @@ from pykml.factory import KML_ElementMaker as KML
 from lxml import etree
 
 J2735_FILE_VERSION = "2024-09-16"
-J2735_TOOL_VERSION = "2.0.7"
+J2735_TOOL_VERSION = "2.0.8"
 
 class j2735_logcore:
   def __init__(self):
@@ -380,8 +380,13 @@ class j2735_logcore:
 
     self.msg_id = int(self.msg['messageId'])
     if self.logging:
-      data = {'Timestamp': self.timestamp, 'Direction': 'TX', 'Message_id': self.msg_id,
-              'WSMP_version': self.wsmp_layer, 'P1609dot2_flag': self.dot2_signed, 'Message': self.msg}
+      data = {'Timestamp': self.timestamp,
+              'Direction': 'TX',
+              'Message_id': self.msg_id,
+              'WSMP_version': self.wsmp_layer,
+              'PSID': self.psid_actual,
+              'P1609dot2_flag': self.dot2_signed,
+              'Message': self.msg}
       if self.tx_count == 1:
         data['Version'] = J2735_FILE_VERSION
       self.log.write(data)
@@ -430,7 +435,7 @@ class j2735_logcore:
     self.msg_id = int(self.msg['messageId'])
     if self.logging:
       data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_id': self.msg_id,
-              'WSMP_version': self.wsmp_layer, 'P1609dot2_flag': self.dot2_signed, 'Message': self.msg}
+              'WSMP_version': self.wsmp_layer, 'PSID': self.psid_actual, 'P1609dot2_flag': self.dot2_signed, 'Message': self.msg}
       if self.rx_count == 1:
         data['Version'] = J2735_FILE_VERSION
       self.log.write(data)
