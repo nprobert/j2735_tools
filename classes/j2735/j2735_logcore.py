@@ -56,6 +56,10 @@ class j2735_logcore:
     self.rx_bsm = 0
     self.rx_map = 0
     self.rx_spat = 0
+    
+    # callback
+    self.json_data = {}
+    self.callback = None
 
     # WSMP
     self.wsmp_layer = 0
@@ -379,17 +383,20 @@ class j2735_logcore:
       return
 
     self.msg_id = int(self.msg['messageId'])
+    data = {'Timestamp': self.timestamp,
+            'Direction': 'TX',
+            'Message_id': self.msg_id,
+            'WSMP_version': self.wsmp_layer,
+            'PSID': self.psid_actual,
+            'P1609dot2_flag': self.dot2_signed,
+            'Message': self.msg}
     if self.logging:
-      data = {'Timestamp': self.timestamp,
-              'Direction': 'TX',
-              'Message_id': self.msg_id,
-              'WSMP_version': self.wsmp_layer,
-              'PSID': self.psid_actual,
-              'P1609dot2_flag': self.dot2_signed,
-              'Message': self.msg}
       if self.tx_count == 1:
         data['Version'] = J2735_FILE_VERSION
       self.log.write(data)
+    self.json_data = data
+    if self.callback != None:
+        self.callback(data)
 
     if self.msg_id == MESSAGE_BSM:
       id = int(self.msg['value']['coreData']['id'], 16) & 0xffff
@@ -414,6 +421,8 @@ class j2735_logcore:
       self.log_debug("\tJ2735 Other TX Packet %u: %s" % (self.msg_id, str(binascii.hexlify(tx))))
       self.other_tx_count += 1
     self.tx_counts[self.msg_id] += 1
+    
+    return data
 
   def raw_rx_packet(self, rx):
     self.count += 1
@@ -433,13 +442,21 @@ class j2735_logcore:
       return
 
     self.msg_id = int(self.msg['messageId'])
+    data = {'Timestamp': self.timestamp,
+            'Direction': 'RX',
+            'Message_id': self.msg_id,
+            'WSMP_version': self.wsmp_layer,
+            'PSID': self.psid_actual,
+            'P1609dot2_flag': self.dot2_signed,
+            'Message': self.msg}
     if self.logging:
-      data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_id': self.msg_id,
-              'WSMP_version': self.wsmp_layer, 'PSID': self.psid_actual, 'P1609dot2_flag': self.dot2_signed, 'Message': self.msg}
       if self.rx_count == 1:
         data['Version'] = J2735_FILE_VERSION
       self.log.write(data)
-
+    self.json_data = data
+    if self.callback != None:
+        self.callback(data)
+        
     if self.msg_id == MESSAGE_BSM:
       id = int(self.msg['value']['coreData']['id'], 16) & 0xffff
       self.log_debug("\tJ2735 BSM RX Packet: %u" %(id))
@@ -491,6 +508,8 @@ class j2735_logcore:
       self.log_debug("\tJ2735 Unknown RX Packet %u: %s" % (self.msg_id, str(binascii.hexlify(rx))))
       self.unknown_rx_count += 1
     self.rx_counts[self.msg_id] += 1
+
+    return data
 
 #
 # J2735 packets with header
