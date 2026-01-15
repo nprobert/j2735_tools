@@ -538,10 +538,8 @@ class ViewerWindow(MainWindow):
   def rtcm_message(self, row):
     txt = "RTCM Corrections Message (RTCM)\n"
     msg = row['Message']
-    win = 0
-    if sys.platform == "win32" or sys.platform == "win64" or sys.platform == "cygwin":
-      win = 1
-
+    cinp = bytes()
+    
     if 'value' in msg and 'msgs' in msg['value']:
       numrec = 0
       for rec in msg['value']['msgs']:
@@ -550,10 +548,20 @@ class ViewerWindow(MainWindow):
         hdr = "==============\nRTCM Record #" + str(numrec) + "\n"
         hdr += "--- hex data ---\n" + rec + "\n"
 
-        msg = RTCMReader.parse(inp)
-        out = "--- RTCM decode ---\n" + str(msg) + "\n"
+        # if PSID == 0x80
+        if row['PSID'] == 128:
+          msg = RTCMReader.parse(inp)
+          out = "--- RTCM 0x80 decode ---\n" + str(msg) + "\n"
+          txt = txt + hdr + out
+        else:
+          cinp = cinp + inp # catenate
 
-        txt = txt + hdr + out
+      # if PSID == 0x81
+      if row['PSID'] == 129:
+          msg = RTCMReader.parse(cinp)
+          out = "--- RTCM 0x81 decode ---\n" + str(msg) + "\n"
+          txt = txt + hdr + out
+          
       if numrec == 0:
         txt += "RTCM Message is missing record data!"
     else:

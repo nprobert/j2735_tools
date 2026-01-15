@@ -69,7 +69,6 @@ class j2735_decode(j2735_logcore):
       content &= 0x07
       if content == 0:
         # unsecured
-        self.dot2_signed = 0
         (val, leng) = oer_parse_length(pkt[index:])
         self.log_debug("\tUnsecured (%u)" % (leng))
         index += leng
