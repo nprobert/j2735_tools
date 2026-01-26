@@ -19,7 +19,7 @@ from pykml.factory import KML_ElementMaker as KML
 from lxml import etree
 
 J2735_FILE_VERSION = "2024-09-16"
-J2735_TOOL_VERSION = "2.0.10"
+J2735_TOOL_VERSION = "2.0.11"
 
 class j2735_logcore:
   def __init__(self):
@@ -27,7 +27,7 @@ class j2735_logcore:
     self.debug_on = 0
     self.debug = 0
     self.bin_maps = 0
-
+    
     # data logging
     self.log = 0
     self.basepath = 1
@@ -51,6 +51,7 @@ class j2735_logcore:
     # message
     self.msg = {}
     self.msg_id = 0
+    self.msg_filter = []
     self.is_tx = 0
     self.tx_bsm = 0
     self.rx_bsm = 0
@@ -80,8 +81,6 @@ class j2735_logcore:
     self.rx_count = 0
     self.rx_counts = [0] * 128
     self.tx_counts = [0] * 128
-    self.bsmp_tx_count = 0
-    self.bsmp_rx_count = 0
     self.bsm_tx_count = 0
     self.bsm_rx_count = 0
     self.map_tx_count = 0
@@ -135,8 +134,8 @@ class j2735_logcore:
       self.meta.write("J2735 Tool Version: " + J2735_TOOL_VERSION)
       self.meta.write("J2735 File Version: " + J2735_FILE_VERSION)
       self.meta.write(ctime())
-      self.meta.write("J2735 Input: " + file)
-      self.meta.write("J2735 Output: " + self.logfile)
+      self.meta.write("Input PCAP File: " + file)
+      self.meta.write("Output JSON File: " + self.logfile)
     self.logging = 1
 
     # debug output
@@ -382,7 +381,14 @@ class j2735_logcore:
       self.unknown_tx_count += 1
       return
 
+    # check filter
     self.msg_id = int(self.msg['messageId'])
+    if self.msg_filter:
+        if msg_names[self.msg_id] not in self.msg_filter:
+            return
+    self.tx_counts[self.msg_id] += 1
+    
+    # start JSON
     data = {'Timestamp': self.timestamp,
             'Direction': 'TX',
             'Message_id': self.msg_id,
@@ -441,7 +447,14 @@ class j2735_logcore:
       self.unknown_rx_count += 1
       return
 
+    # check filter
     self.msg_id = int(self.msg['messageId'])
+    if self.msg_filter:
+        if msg_names[self.msg_id] not in self.msg_filter:
+            return
+    self.rx_counts[self.msg_id] += 1
+    
+    # start JSON
     data = {'Timestamp': self.timestamp,
             'Direction': 'RX',
             'Message_id': self.msg_id,
@@ -527,78 +540,18 @@ class j2735_logcore:
     elif rxtx==2:
       self.raw_rx_packet(rx[16:])
 
-#
-# BSMP packets (DENSO, CAMP and NTCNA only)
-#
-  def bsmp_tx_packet(self, txe):
-    self.count += 1
-    self.tx_count += 1
-    self.bsmp_tx_count += 1
-    self.is_tx = 1
-    self.msg_id = MESSAGE_BSM
-
-    # unpack TXE header and BSM
-    bsmp = BSMP()
-    bsmp.convert = self.convert
-    bsmp.decode_txe(txe[0:4])
-    bsmp.decode_bsmp(txe[4:])
-    self.timestamp =  int(bsmp.get_ts())
-
-    # encode for logging
-    data = bsmp.encode_bsm()
-    self.msg = {'messageId': 20, 'value': data}
-    data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_id': MESSAGE_BSM,
-            'P1609dot2_flag': self.dot2_signed, 'Version': J2735_FILE_VERSION, 'Message': self.msg}
-    self.tx_bsm = self.msg
-    self.log.write(data)
-
-  def bsmp_rx_packet(self, rx):
-    self.count += 1
-    self.rx_count += 1
-    self.bsmp_rx_count += 1
-    self.is_tx = 0
-    self.msg_id = MESSAGE_BSM
-
-    # unpack SIB header and BSM
-    bsmp = BSMP()
-    bsmp.convert = self.convert
-    bsmp.decode_sib(rx[0:32])
-    bsmp.decode_bsmp(rx[32:])
-    self.timestamp =  int(bsmp.get_ts())
-
-    # encode for logging
-    data = bsmp.encode_bsm()
-    self.msg = {'messageId': 20, 'value': data}
-    data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_id': MESSAGE_BSM,
-            'P1609dot2_flag': self.dot2_signed, 'Version': J2735_FILE_VERSION, 'Message': self.msg}
-    self.rx_bsm = self.msg
-    self.log.write(data)
-
-  def ntcna_dvi_packet(self, data):
-    data = bytearray(data)
-    dvi = DVI()
-    if data[0] >= 32:
-      # new JSON format
-      msg = dvi.decode_json(data)
-    else:
-      dvi.decode_old(bytearray(data))
-      msg = dvi.dump_data()
-    data = {'Timestamp': self.timestamp, 'Direction': 'RX', 'Message_type': 'DVI', 'Message': self.msg}
-    data['Message'] = msg
-    self.log.write(data)
 
 #
 # reports and stats
 #
   def print_report(self):
+    print("=====================================================")
+    print("J2735 Packet Summary")
+    print("-----------------------------------------------------")
+    self.meta.write("====================================================")
     self.meta.write("J2735 Packet Summary")
-    self.meta.write("=========================================")
-    if self.bsmp_tx_count or self.bsmp_rx_count:
-      self.meta.write("BSMP   RX, TX packets = %7u, %7u" % (self.bsmp_rx_count, self.bsmp_tx_count))
-    if self.bsm_tx_count or self.bsm_rx_count:
-      self.meta.write("BSM    RX, TX packets = %7u, %7u" % (self.bsm_rx_count, self.bsm_tx_count))
-      print("\tBSM RX, TX packets = %7u, %7u" % (self.bsm_rx_count, self.bsm_tx_count))
-    for i in range(MESSAGE_MAP, MESSAGE_LAST):
+    self.meta.write("----------------------------------------------------")
+    for i in range(MESSAGE_FIRST, MESSAGE_LAST):
       if self.rx_counts[i] or self.tx_counts[i]:
         self.meta.write("%6s RX, TX packets     = %7u, %7u" % (msg_names[i], self.rx_counts[i], self.tx_counts[i]))
         print("\t%6s RX, TX packets     = %7u, %7u" % (msg_names[i], self.rx_counts[i], self.tx_counts[i]))
@@ -606,10 +559,10 @@ class j2735_logcore:
       self.meta.write("%6s packets        = %7u, %7u" % ("Unknown", self.unknown_rx_count, self.unknown_tx_count))
     if self.error_count:
       self.meta.write("%6s packets        = %7u" % ("ERROR", self.error_count))
-    self.meta.write("=========================================")
-    self.meta.write("Total  RX, TX packets = %7u, %7u" % (self.rx_count, self.tx_count))
-    if self.signed_count:
-      self.meta.write("Total packets signed = %u" % (self.signed_count))
+    self.meta.write("====================================================")
+    self.meta.write("Total  RX, TX packets     = %7u, %7u" % (self.rx_count, self.tx_count))
+    print("=====================================================")
+    print("\tTotal  RX, TX packets     = %7u, %7u" % (self.rx_count, self.tx_count))
     if self.tscbm_count:
       self.meta.write("TSCBM packets = %u" % (self.tscbm_count))
     self.meta.write("\n")

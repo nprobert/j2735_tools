@@ -209,26 +209,6 @@ class j2735_decode(j2735_logcore):
           data = binascii.unhexlify(val)
           self.raw_tx_packet(data)
     #
-    # DENSO WSU BSMP/OTAP
-    # CAMP TOSCo/CACC ports 4200-4202 (removed), 4300 raw MAP/SPAT
-    # NTCNA ports 2734-2738
-    #
-    elif port == 2734 or port == 2736 or port == 2737:
-      # port 2734 is used with DENSO
-      # BSMP broadcase WSU -> * (DWMHWsmObe2PcPort2)
-      # 2736-2737 broadcast is used with Cohda
-      self.log_debug("\tWSU BSMP Broadcast")
-      if data[0]==1 and leng==330:  # TXE
-        self.bsmp_tx_packet(data)
-      elif data[0]==2 and leng==358:  # RX
-        self.bsmp_rx_packet(data)
-    elif port == 4300:
-      # CAMP DENSO WSU OTAP, configured to send raw MAP/SPAT only
-      # dotapUDPIPAddress, dotapUDPPortAddress = 4300,
-      # dotapUDPMapOutputEnable, dotapUDPSPaTOutputEnable both set to 1
-      self.log_debug("\tWSU OTAP Raw MAP, SPAT RX")
-      self.raw_rx_packet(data[6:])
-    #
     # Other UDP port with RX data
     #
     elif (port == 1034 or port == 6053 or port == self.udp_port) and data[0] == 0xcd:

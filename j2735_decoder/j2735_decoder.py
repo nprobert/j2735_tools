@@ -27,11 +27,12 @@ asnobj.ASN1Obj._SILENT = True
 # MAIN
 ###############################################################################
 
-opt_list = "bcdhmo:su:v:BO:"
+opt_list = "bcdf:hmo:su:v:BO:"
 
 help_text = """\t-b        Split BSMs to file by ID
 \t-c        Converting BSM enabled
 \t-d        Debugging enabled to debug.txt
+\t-f        Filter by message name, comma seperated list
 \t-h        Help
 \t-m        Binary MAP output in J2735 UPER format
 \t-o <offs> UDP offset to data in bytes
@@ -47,6 +48,7 @@ def main(argv):
   output = ""
   convert = 0
   debug_on = 0
+  msg_list = ""
   bin_maps = 0
   split_bsm = 0
   split_map = 0
@@ -77,6 +79,9 @@ def main(argv):
     elif opt in ('-d'):
       print("\tDebugging enabled")
       debug_on = 1
+    elif opt in ('-f'):
+      print("\tFiltered output")
+      msg_list = arg
     elif opt in ('-m'):
       print("\tBinary MAP output")
       bin_maps = 1
@@ -116,6 +121,10 @@ def main(argv):
     # options
     decode.convert = convert
     decode.debug_on = debug_on
+    if msg_list != "":
+        decode.msg_filter = msg_list.split(',')
+    else:
+        decode.msg_filter = []
     decode.bin_maps = bin_maps
     decode.splitbsms = split_bsm
     decode.splitmapspat = split_map
