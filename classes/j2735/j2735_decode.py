@@ -194,6 +194,7 @@ class j2735_decode(j2735_logcore):
       ifm = data.splitlines()
       is_map = 0
       is_spat = 0
+      is_rtcm = 0
       for line in ifm:
         line = line.decode("utf-8")
         if line[:1] == "#":
@@ -203,9 +204,11 @@ class j2735_decode(j2735_logcore):
           is_map = 1
         elif (key == "Type" and val == "SPAT"):
           is_spat = 1
+        elif (key == "Type" and val == "RTCM"):
+          is_rtcm = 1        
         elif (key == "Tx Channel"):
           self.chan_no = int(val)
-        elif (key == "Payload" and (is_map or is_spat)):
+        elif (key == "Payload" and (is_map or is_spat or is_rtcm)):
           data = binascii.unhexlify(val)
           self.raw_tx_packet(data)
     #
