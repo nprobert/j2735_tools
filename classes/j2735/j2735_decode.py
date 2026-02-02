@@ -381,8 +381,11 @@ class j2735_decode(j2735_logcore):
 
   def parse_ipv6(self, ip_pkt):
     self.log_debug("IPv6 Layer:")
-    if ip_pkt.proto == 0x11:
-      self.parse_udp(ip_pkt[UDP])
+    try:
+      if ip_pkt.nh == 0x11:
+        self.parse_udp(ip_pkt[UDP])
+    except:
+      pass
 
   def parse_ethernet(self, pkt):
     self.log_debug("Parsing Ethernet Layer:")
@@ -397,7 +400,7 @@ class j2735_decode(j2735_logcore):
     
     # IPv6
     elif ether_pkt.type == 0x86dd:
-      ip_pkt = ether_pkt[IPv6]     
+      ip_pkt = ether_pkt[IPv6]
       self.parse_ipv6(ip_pkt)
   
   def parse_cooked(self, pkt):
