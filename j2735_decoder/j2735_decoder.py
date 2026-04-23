@@ -80,7 +80,7 @@ def main(argv):
       print("\tDebugging enabled")
       debug_on = 1
     elif opt in ('-f'):
-      print("\tFiltered output")
+      print("\tFiltered output:", arg)
       msg_list = arg
     elif opt in ('-m'):
       print("\tBinary MAP output")
