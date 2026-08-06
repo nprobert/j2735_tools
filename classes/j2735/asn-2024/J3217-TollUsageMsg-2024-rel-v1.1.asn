@@ -1,0 +1,218 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J3217
+-- Latest document release for this module is Jun 2022
+-- Filename: J3217-TollUsageMsg-2024-rel-v1.1.asn 
+--
+
+TollUsageMessage
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+v2x-communications (1) technical-committees (1) tolling-applications (9)
+technical-reports (1) j3217 (3217) asn1-module (1) tollUsageMessage (1) 
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS 
+    VehicleTypes, 
+    TollChargerInfo,
+    TollPointID
+        FROM TollAdvertisementMessage {joint-iso-itu-t (2) country (16) us (840)
+        organization (1) sae (114566) v2x-communications (1) technical-committees (1)
+        tolling-applications (9) technical-reports (1) j3217 (3217) asn1-module (1)
+        tollAdvertisementMessage (0) version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    GenericLane
+        FROM MapData {joint-iso-itu-t (2) country (16) us (840) organization (1)
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5)
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) mapData (8)
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    DescriptiveName,
+    DDateTime,
+    LaneID,
+    Latitude,
+    Longitude,
+    Elevation,
+    MinuteOfTheYear,
+    MsgCount,
+    Position3D,
+    TemporaryID
+        FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1)
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5)
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) common (38)
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    EngineCharacteristics,
+    PaymentFee,
+    UserId,
+    VehicleDescription
+        FROM EfcDataDictionary {iso(1) standard(0) 17573 dd(3) 
+        version1(1)} WITH SUCCESSORS;
+
+
+TollUsageMessage ::= SEQUENCE {                   
+-- Toll Usage Message (TUM) is a new message from OBE to indicate to RSE the 
+-- intent to use toll lane broadcasted in TAM Zone
+    tollPointInfo       TollChargerInfo,    -- TC and TP IDs                             
+    tempID              TemporaryID,                                  
+    tumSequenceNum      MsgCount,           -- Increments when retries occur
+    tamSequenceNum      MsgCount,           -- Indicates the TAM being responded to                                                       
+    tumHash             TumHash OPTIONAL,
+    encryptedTumData    EncryptedTumData,   -- This portion will be encrypted
+    ...
+}
+
+TumHash ::= OCTET STRING (SIZE(32)) -- SHA-256 hash of the plain text TumData
+EncryptedTumData ::= OCTET STRING (SIZE(1..7000)) 
+-- EncryptedTumData contains UPER-encoded TumData that is encrypted 
+-- 8000 octets is the max size of a 3GPP packet payload
+-- 1000 is left for lower layer overhead
+
+-- TumData gets UPER-encoded, encrypted and stored in EncryptedTumData for transmission
+TumData ::= SEQUENCE {
+    tollUserData                TollUserData,
+    tollServiceProviderData     TollServiceProviderData OPTIONAL,
+    ...
+}
+
+TollServiceProviderData ::= OCTET STRING (SIZE(1..1024, ...))
+
+TollUserData ::= SEQUENCE {
+    timeStamp           DDateTime,                                                                   
+    tspId               OBJECT IDENTIFIER,  -- OID of Toll Service Provider                                        
+    vehicleId           VehicleId, 
+    vehType             VehicleTypes        OPTIONAL,
+    vehicleDescription  VehicleDescription  OPTIONAL,       -- Imported from ISO 17573
+    vehAxlesAndWeight   VehicleAxlesAndWeightInfo OPTIONAL,
+    numOccupants        INTEGER (2..5, ...)      OPTIONAL, 
+    -- Num of people in the vehicle if more than one, the value 5 indicates 5 or more
+    entryTollPointId    TollPointID         OPTIONAL,
+    entryTimeStamp      DDateTime           OPTIONAL,
+    -- entryTollPointId and entryTimeStamp are used for closed networks
+    locAndTimeStamps    LocAndTimeStamps    OPTIONAL,
+    lastTollPoints      LastTollPointInfos  OPTIONAL, 
+    --Used by the TC to compute travel times
+    charge              PaymentFee          OPTIONAL,                                         
+    ...
+}
+
+VehicleAxlesAndWeightInfo ::= SEQUENCE {
+    vehNumAxles         INTEGER (1..10, ...), 
+    -- The value 10 indicates 10 or more axles
+    vehWeightPerAxle    SEQUENCE (SIZE(1..10, ...)) OF INTEGER (0..65535),
+    -- Provide weight for each axle specified in vehNumAxles 
+    vehTotalWeight      INTEGER (0..16777215), 
+    -- Includes tractor and trailer train, in units indicated
+    vehWeightUnits      ENUMERATED {pounds, kilograms, ...},
+    ...
+}
+
+VehicleId ::= SEQUENCE {
+    vehicleIdentity     OCTET STRING (SIZE(16, ...)) OPTIONAL,
+    licPlateState       IA5String (SIZE(2))          OPTIONAL,                             
+    licPlateNumVeh      IA5String (SIZE(1..12, ...)) OPTIONAL,
+    licPlateNumTrailer  IA5String (SIZE(1..12, ...)) OPTIONAL, 
+    -- Last trailer in a train if multiple trailers
+    userId              UserId                       OPTIONAL, -- Imported from ISO 17573
+    ...
+}
+
+LocAndTimeStamps ::= SEQUENCE (SIZE(1..5, ...)) OF LocAndTimeStamp
+
+LocAndTimeStamp ::= SEQUENCE {
+    latitude    Latitude,
+    longitude   Longitude,
+    elevation   Elevation   OPTIONAL,
+    timeStamp   DDateTime,
+    currentLane LaneID      OPTIONAL,
+    ...
+}
+
+LastTollPointInfos ::= SEQUENCE (SIZE (1..5, ...)) OF LastTollPointInfo
+
+LastTollPointInfo ::= SEQUENCE {
+    tollChargerInfo     TollChargerInfo,    
+    -- Includes TollCharger and TollPoint identifiers
+    timeStamp           DDateTime,          
+    -- Time of TUM transmission at previous toll point
+    ...
+}
+
+END
+
+
+

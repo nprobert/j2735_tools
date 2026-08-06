@@ -1,0 +1,370 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J2945/6
+-- Latest document release for this module is Oct 2023
+-- Filename: J2945-6-CooperativeControlMessage-2024-rel-v1.1.1.asn 
+--
+
+CooperativeControlMessage 
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+v2x-communications (1) technical-committees (1) v2x-vehicular-applications (8) technical-reports (1) 
+j2945 (2945) slash-6 (6) asn1-module (1) cooperativeControlMessage (40) 
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS
+    VehicleSafetyExtensions
+        FROM BasicSafetyMessage {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+        v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+        j2735 (2735) part-0 (0) asn1-module (1) basicSafetyMessage (7) 
+        version-1 (1)  version-minor-1 (1)} WITH SUCCESSORS
+    BSMcoreData,
+    TemporaryID,
+    Speed,
+    Acceleration,
+    YawRate
+        FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+        v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1)
+        j2735 (2735) part-0 (0) asn1-module (1) common (38) 
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS;
+
+CooperativeControlMessage ::= SEQUENCE {
+   -- Part I, Sent at all times with each message
+   coreData      BSMcoreData,   
+
+   -- Part II Content
+   partII        SEQUENCE (SIZE(1..8)) OF 
+                 CCMPartIIcontent {{ CCMpartIIExtension }} OPTIONAL,
+   ...
+   }
+
+-- CCM Part II content support
+PARTII-EXT-ID-AND-TYPE ::= CLASS {
+   &id     PartII-Id UNIQUE,
+   &Type
+   } WITH SYNTAX {&Type IDENTIFIED BY &id}
+
+CCMPartIIcontent  { PARTII-EXT-ID-AND-TYPE: Set} ::= SEQUENCE {
+   partII-Id     PARTII-EXT-ID-AND-TYPE.&id( {Set} ),
+   partII-Value  PARTII-EXT-ID-AND-TYPE.&Type( {Set}{@partII-Id} )
+   }
+
+PartII-Id ::= INTEGER (0..63)
+   vehicleSafetyExt       PartII-Id::= 0  -- VehicleSafetyExtensions
+   lightVehicleCCMExt PartII-Id::= 1  -- LightVehicleCCMExtensions
+   heavyTruckCCMExt PartII-Id::= 2  -- HeavyTruckCCMExtensions
+   -- NOTE: new registered Part II content IDs will be denoted here
+
+
+-- In a given message there may be multiple extensions present 
+-- but at most one instance of each extension type.
+CCMpartIIExtension  PARTII-EXT-ID-AND-TYPE ::= { 
+   { VehicleSafetyExtensions      IDENTIFIED BY vehicleSafetyExt} |
+   { LightVehicleCCMExtensions    IDENTIFIED BY lightVehicleCCMExt} |
+   { HeavyTruckCCMExtensions      IDENTIFIED BY heavyTruckCCMExt},
+   ...
+   }
+  
+LightVehicleCCMExtensions ::= SEQUENCE {
+   longCntrlState     LongitudinalControlState,
+   targetId           TemporaryID                 OPTIONAL,
+   accelForecast      Acceleration                OPTIONAL,
+   accelTimeConst     AccelTimeConstant           OPTIONAL,
+   seperationDist     SeparationDistance          OPTIONAL,
+   frontCutIn         FrontCutIn                  OPTIONAL,
+   ...
+   }
+   
+HeavyTruckCCMExtensions ::= SEQUENCE {
+   longCntrlState            LongitudinalControlState,
+   targetId                  TemporaryID                 OPTIONAL,
+   roadGrade                 RoadGrade                   OPTIONAL,
+   brakePedalPos             BrakePedalPosition          OPTIONAL,
+   accelPedalPos             AcceleratorPedalPosition    OPTIONAL,
+   desiredSpeed              Speed                       OPTIONAL,
+   desiredAccel              Acceleration                OPTIONAL,
+   desiredTorque             Torque                      OPTIONAL,
+   desiredTmRetarderTorque   Torque                      OPTIONAL,
+   desiredEngRetarderTorque  Torque                      OPTIONAL,
+   axesMvmt                  AxesMovement                OPTIONAL,
+   separationDist            SeparationDistance          OPTIONAL,
+   totalMass                 TotalMass                   OPTIONAL,
+   maxAvailAccel             MaxAvailableAcceleration    OPTIONAL,
+   maxAvailDecel             MaxAvailableDeceleration    OPTIONAL,
+   ccmFaultMode              CCMFaultMode                OPTIONAL,
+   maneuverID                ManeuverID                  OPTIONAL,
+   frontCutIn                FrontCutIn                  OPTIONAL,
+   ...
+   }
+
+LongitudinalControlState ::= ENUMERATED {
+    unavailable,
+    manual,
+    cc,
+    acc,
+    caccOne,
+    caccMultiple,
+    sensorAuto,
+    fusedAuto,
+    manualOver,
+    ...
+    } -- Note: subject to further growth
+
+AccelTimeConstant ::= SEQUENCE {
+   accelTimeConst     TimeConstant          OPTIONAL,
+   decelTimeConst     TimeConstant          OPTIONAL
+   }
+
+TimeConstant ::= INTEGER (0..255) -- Units of 0.1 s
+          -- Provides a range of 0 to 25.4 s
+          -- The value 255 indicates unavailable
+
+AxesMovement ::= SEQUENCE {
+   yaw            Yaw            OPTIONAL,
+   pitch          Pitch          OPTIONAL,
+   roll           Roll           OPTIONAL,
+   yawRate        YawRate        OPTIONAL,
+   pitchRate      PitchRate      OPTIONAL,
+   rollRate       RollRate       OPTIONAL
+   }
+
+RoadGrade ::= INTEGER (-100..101) -- LSB units are 0.2 percent
+          -- Provides a range of -20 to 20 percent
+          -- The value 101 indicates unavailable
+
+BrakePedalPosition ::= INTEGER (0..201) -- LSB units are 0.5 percent
+          -- Provides a range of 0 to 100 percent
+          -- The value 201 indicates unavailable
+
+AcceleratorPedalPosition ::= INTEGER (0..201) -- LSB units are 0.5 percent
+          -- Provides a range of 0 to 100 percent
+          -- The value 201 indicates unavailable
+
+Torque ::= INTEGER (0..601) -- LSB units are 5 N-m
+          -- Provides a range of 0 to 3000 N-m
+          -- The value 601 indicates unavailable
+
+Yaw ::= INTEGER (0..28800)
+          -- LSB of 0.0125 degrees
+          -- A range of 0 to 359.9875 degrees
+          -- A value of 28800 shall be used when unavailable
+
+Pitch ::= INTEGER (-7200..7201)
+          -- LSB of 0.0125 degrees
+          -- A range of -90 to 90 degrees
+          -- A value of 7201 shall be used when unavailable
+
+Roll ::= INTEGER (-7200..7201)
+          -- LSB of 0.0125 degrees
+          -- A range of -90 to 90 degrees
+          -- A value of 7201 shall be used when unavailable
+
+PitchRate ::= INTEGER (-3000..3001) 
+          -- LSB units of 0.01 degrees per second (signed)
+          -- A value of 3001 shall be used when unavailable
+
+RollRate ::= INTEGER (-3000..3001) 
+          -- LSB units of 0.01 degrees per second (signed)
+          -- A value of 3001 shall be used when unavailable
+
+SeparationDistance ::= INTEGER (0..2001) -- LSB units are 0.1 m
+          -- Provides a range of 0 to 200 m
+          -- The value 2001 indicates unavailable
+
+TotalMass ::= INTEGER (0..1288) -- LSB units are 100 kg
+          -- Provides a range of 0 to 128,600 kg
+          -- The value 1287 for mass greater 128,600 kg
+          -- The value 1288 indicates unavailable
+
+MaxAvailableAcceleration ::= INTEGER (0..2001) -- LSB units are 0.01 m/s^2
+          -- Provides a range of 0 to 20 m/s^2
+          -- The value 2001 indicates unavailable
+
+MaxAvailableDeceleration ::= INTEGER (-2001..0) -- LSB units are 0.01 m/s^2
+          -- Provides a range of 0 to -20 m/s^2
+          -- The value -2001 indicates unavailable
+
+CCMFaultMode ::= BIT STRING {
+    unavailable              (0),
+    commFault                (1),
+    radarFault               (2),
+    lidarFault               (3),
+    engingBrkCtlFault        (4),
+    serviceBrkCtlFault       (5),
+    transRetarderFault       (6),
+    engineCtlFault           (7)
+    } (SIZE (8, ...)) -- Note: subject to further growth
+
+
+ManeuverID ::= INTEGER {
+   unavailable                      (0),
+   stayAtRestManCtl                 (1), -- Stay at rest with manual control      
+   stayAtRestAutoLonCtl             (2), -- Stay at rest with automatic
+                                         --   longitudinal control
+   autoSpdCtlFollowRefTrafAccel     (4), -- Automatic speed control following a 
+                                         --   reference trajectory b 
+                                         --   acceleration in response to speed 
+                                         --   limit change)
+   transManToAutoSpdCtl             (5), -- Transition from manual to automatic 
+                                         --   speed control 
+   stringForm                       (6), -- Platoon forming - following the 
+                                         --   speed of the preceding vehicle in 
+                                         --   the platoon or CCM string, but 
+                                         --   not yet at the desired distance 
+                                         --   (speed tracking)
+   autoJoinString                   (7), -- Automatic joining within a platoon
+                                         --   or CCM string (speed & distance 
+                                         --   control to desired distance)
+   autoCtl                          (8), -- Automatic platooning or CCM 
+                                         --   control (at cruise speed - no
+                                         --   other maneuver)
+   increaseGapAutoCtl               (9), -- Increasing gap under automatic 
+                                         --   control (within a platoon or CCM 
+                                         --   string) to a specified distance 
+                                         --   with respect to preceding vehicle
+   leftLnChgEndString              (10), -- Left-lane-changing to the end of a 
+                                         --   platoon or CCM string
+   rightLnChgEndString             (11), -- Right-lane-changing to the end of a 
+                                         --   platoon or CCM string
+   virtualGapIncDiffLane           (12), -- Virtual gap increase to specified 
+                                         --   distance from current distance in 
+                                         --   a different lane
+   virtualGapRedDiffLane           (13), -- Virtual gap reduction to specified 
+                                         --   distance from current distance in 
+                                         --   a different lane
+   emgcyIncInterVehDistToStop      (14), -- Emergency increase to longer inter-
+                                         --   vehicle distance to stop (due to 
+                                         --   an incurable fault)
+   vehMrgToStringFrmOnramp         (15), -- Vehicle merging into a platoon or 
+                                         --   CCM string from on-ramp
+   leftLnChgJoinString             (16), -- Left-lane-changing to join a 
+                                         --   platoon or CCM string
+   rightLnChgJoinString            (17), -- Right-lane-changing to join a 
+                                         --   platoon or CCM string
+   collisionAvoidLnChgOnly         (19), -- Collision avoidance by lane 
+                                         --   changing only
+   collisionAvoidLnChgWthSpdRed    (20), -- Collision avoidance by lane 
+                                         --   changing and speed reduction
+   collisionAvoidEmgcyStp          (21), -- Collision avoidance by emergency 
+                                         --   stop
+   autoDecelFollowSpdProfile       (28), -- Automatic deceleration following 
+                                         --   designed speed profile (in 
+                                         --   response to speed limit change)
+   stoppingClosedloopVehFollowCtl  (31), -- Stopping by closed-loop vehicle 
+                                         --   following control
+   stoppngOpenloopDecelCmd         (32), -- Stopping by open-loop deceleration 
+                                         --   command
+   brakeToStopManCtl               (33), -- Brake to stop in manual mode
+   incGapContString                (34), -- Gradually increasing gap to longer 
+                                         --   desired distance but continue 
+                                         --   platoon or CCM control (in 
+                                         --   response to a fault)
+   incGapRedSpdToStp               (35), -- Gradually increasing gap and 
+                                         --   reducing speed to stop (in 
+                                         --   response to a fault)
+   cruiseCtl                       (36), -- Cruise control (speed regulation, 
+                                         --   with no forward target vehicle 
+                                         --   to track)
+   adapCruiseCtl                   (41), -- Adaptive cruise control (vehicle 
+                                         --   following control without 
+                                         --   communication)
+   coopAdapCruiseCtl               (42), -- Cooperative adaptive cruise control 
+                                         --   (vehicle following control using 
+                                         --   forward ranging sensor and 
+                                         --   communication data)
+   manCtl                          (46), -- Manual control (including all 
+                                         --   maneuvers)
+   coordAutoBrkForStringWthSvcBrkEngBrk (47), -- Coordinated automatic braking 
+                                              --   for a platoon or CCM string 
+                                              --   with both service brake and 
+                                              --   engine brake if applicable
+   emgcyBrkForStringOnePlusVehWthSvcBrk (48)  -- Emergency braking for a 
+                                              --   platoon or CCM string: at 
+                                              --   least one of the vehicles 
+                                              --   used service brake for
+                                              --   handling emergency 
+                                              --   situations
+    } (0..255)
+
+FrontCutIn ::= BOOLEAN
+               -- True if a front cut-in is detected
+               -- False if a front cut-in is not detected
+
+END

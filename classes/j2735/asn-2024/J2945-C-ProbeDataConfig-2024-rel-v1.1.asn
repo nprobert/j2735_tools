@@ -1,0 +1,477 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J2945/C
+-- Latest document release for this module is Jun 2022
+-- Filename: J2945-C-ProbeDataConfig-2024-rel-v1.1.asn 
+--
+
+ProbeDataConfig
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+j2945 (2945) slash-c (12) asn1-module (1) probeDataConfig (0)
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS 
+    DDate, 
+	DTime, 
+	DDateTime, 
+	DSRCmsgID, 
+	IntersectionID, 
+	RoadAuthorityID 
+		FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) common (38) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+
+    ValidRegion 
+		FROM TravelerInformation {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) travelerInformation (20) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS;
+
+ProbeDataConfigMessage ::= SEQUENCE (SIZE(1..255, ...)) OF ProbeDataConfig
+
+ProbeDataConfig ::= SEQUENCE {
+    descriptor          ConfigDescriptor,
+    triggers            ConfigTriggers,
+    maxAgeOfData        INTEGER (1..90), -- in days
+    boundary            ConfigBoundary  OPTIONAL,
+    ...
+}
+
+ConfigDescriptor ::= SEQUENCE {
+    identifier      ConfigId,
+    vehClass        CfgVehicleClass     OPTIONAL,
+    roadAuthorityID RoadAuthorityID     OPTIONAL,
+    percentOfResp   INTEGER (1..10)     OPTIONAL, 
+    -- '1' indicates report 10% of the time, '10' is 100%
+    ...
+}
+ 
+ConfigId ::= INTEGER (1..255)
+
+-- The following are FHWA defined vehicle classes (types)
+-- See ProbeDataReport module for enumerated values
+CfgVehicleClass ::= SEQUENCE    {
+    motorcycles                         BOOLEAN,
+    passengerCars                       BOOLEAN,
+    other2axle4tireSingleUnitVehs       BOOLEAN,
+    buses                               BOOLEAN,
+    twoAxle6TireSingleUnitTrucks        BOOLEAN,
+    threeAxleSingleUnitTrucks           BOOLEAN,
+    fourOrMoreAxleSingleUnitTrucks      BOOLEAN,
+    fourOrFewerAxleSingleTrailerTrucks  BOOLEAN,
+    fiveAxleSingleTrailerTrucks         BOOLEAN,
+    sixOrMoreAxleSingleTrailerTrucks    BOOLEAN,
+    fiveOrFewerAxleMultiTrailerTrucks   BOOLEAN,
+    sixAxleMultiTrailerTrucks           BOOLEAN,
+    sevenOrMoreAxleMultiTrailerTrucks   BOOLEAN,
+    ...
+}
+
+ConfigBoundary ::= CHOICE {
+    temporalBoundary    ConfigTemporalBoundary,
+    geoAndDistBoundary  ValidRegion, -- From J2735
+    ...
+}
+        
+-- Defines applicable periods for an event.
+ConfigTemporalBoundary ::= SEQUENCE {
+    beginTime           DDateTime, --From J2735
+    endTime             DDateTime, --From J2735
+    recurring           CfgEventRecurrence, --borrowed from J2945/4 RSM
+    ...
+}
+
+-- Definition for EventRecruarance borrowed from J2945/4 RSM.
+CfgEventRecurrence ::= SEQUENCE {
+    startTime   DTime   OPTIONAL,  -- Time of day this period starts
+    endTime     DTime   OPTIONAL,  -- Time of day this period ends
+    startDate   DDate   OPTIONAL,  -- Date this period starts
+    endDate     DDate   OPTIONAL,  -- Date this period ends
+    -- Define days of the week for applicable periods (used by EventRecurrence)
+    monday      BOOLEAN,
+    tuesday     BOOLEAN,
+    wednesday   BOOLEAN,
+    thursday    BOOLEAN,
+    friday      BOOLEAN,
+    saturday    BOOLEAN,
+    sunday      BOOLEAN,
+    -- exclusion: TRUE: The period defined here is excluded, 
+    -- i.e., the period is NOT applicable to the event
+    exclusion   BOOLEAN OPTIONAL,  
+    ...
+}
+
+ConfigTriggers ::= CHOICE {
+    instantaneousTriggers   CfgInstantaneousEventTriggers,
+    avgAndSumTriggers       CfgAveragedAndSummaryTriggers,
+    ...
+}
+
+CfgInstantaneousEventTriggers ::= CHOICE {
+    intervalEvents      CfgIntervalEvents,
+    vehicleEvents       CfgVehicleEvents,
+    roadwayEvents       CfgRoadwayEvents,
+    commSysPerfEvents   CfgCommSysPerfEvents,
+    ...
+}
+
+CfgIntervalEvents ::= SEQUENCE {
+    interval        CfgInterval,
+    wiperStatus     BOOLEAN                 OPTIONAL,
+    vehCount        BOOLEAN                 OPTIONAL, 
+    -- Count of V2V equipped vehicles encountered during the interval
+    weatherData     BOOLEAN                 OPTIONAL,
+    transitVehData  CfgTransitVehicleData   OPTIONAL, 
+    -- Multiple parameters from Transit vehicles 
+    numOfOccupants  BOOLEAN                 OPTIONAL,
+    ...
+}
+
+CfgTransitVehicleData ::= SEQUENCE {
+    currNumPasngers BOOLEAN     OPTIONAL,
+    avgNumPasngers  BOOLEAN     OPTIONAL,
+    trnstVehSchAdh  BOOLEAN     OPTIONAL,
+    ...
+}
+
+CfgInterval ::= CHOICE {
+    timeInterval            INTEGER(1..36000),  -- in tenths of seconds up to an hour
+    distanceInterval        INTEGER(1..100),    -- in 0.1 kilometers
+    ...
+}
+
+CfgVehicleEvents ::= SEQUENCE {
+    headLights              BOOLEAN                 OPTIONAL,
+    fogLights               BOOLEAN                 OPTIONAL,
+    hazardLights            BOOLEAN                 OPTIONAL,
+    kinematicEvents         CfgKinematicEvents      OPTIONAL,
+    wiperStatusChange       BOOLEAN                 OPTIONAL,
+    lowSpeed                CfgLowSpeedCriteria     OPTIONAL,
+    -- Speed falls below a threshold (MIN 5 KPH) for a defined duration (in seconds) 
+    resumedSpeed            INTEGER (1..100)        OPTIONAL,
+    -- Speed goes above a certain threshold, in KPH
+    vehEntrsExitsRegion     BOOLEAN                 OPTIONAL,  
+    -- Vehicle enters or exits the region defined in ConfigBoundary
+    emerVehDetect           BOOLEAN                 OPTIONAL,
+    -- Emergency vehicle detected by a non-emergency vehicle 
+    emerAndTransInfo        CfgEmerAndTransitInfo   OPTIONAL,
+    -- Info pertaining to emergency or transit vehicles
+    v2xMsgRecption          CfgMsgRecepIndicators   OPTIONAL,
+    -- V2X message reception: reception of any V2X message over the communications
+    -- interface(s), identified by indicating the desired data 
+    -- dictionary (e.g. SAE J2735, ETSI and ISO data dictionary documents) and  
+    -- message IDs in the configuration.
+    driverAlertsAndWarnings BOOLEAN                 OPTIONAL,
+    ...
+}
+
+CfgKinematicEvents ::= SEQUENCE {
+    events              CfgEvents,
+    hysteresis          CfgHysteresis       OPTIONAL, 
+    ...
+}
+
+CfgEvents ::= SEQUENCE {
+    absActivated            BOOLEAN         OPTIONAL,
+    tractionCtlLoss         BOOLEAN         OPTIONAL,
+    stabilityCtlActivated   BOOLEAN         OPTIONAL,
+    hardBraking             BOOLEAN         OPTIONAL,
+    swerveThreshold         INTEGER (1..50) OPTIONAL,  
+    -- Lateral acceleration exceeds a certain threshold
+    -- e.g. 18 represents 1.8 m/s2, 36 represents 3.6 m/s2 (units = 0.1 m/s2)
+    -- Measured in meters per second squared and the threshold value of comfort 
+    -- is 1.8 m/s2, with medium comfort and discomfort levels of 3.6 m/s2 
+    -- and 5 m/s2, respectively.
+    ...
+}
+
+CfgHysteresis ::= SEQUENCE {
+    hysSamples      INTEGER(1..10), 
+    -- Value indicates the number of samples before and after the event
+    hysRate         INTEGER(1..10), 
+    -- In 100 mSecs, value indicates sampling interval for hysteresis
+    ...
+}
+
+CfgEmerAndTransitInfo ::= CHOICE {
+    emerVehLightBar         BOOLEAN,
+    -- Emergency vehicle light bar turned on/off (reported by the emergency vehicle only)
+    reqTspEvp               BOOLEAN,
+    -- TSP/EVP requested (transit and emergency vehicles only)
+    transitVehPassCnt       BOOLEAN,
+    -- Transit Vehicle passenger count change and resulting number of occupants
+    transitVehDoor          BOOLEAN,
+    -- Transit vehicle door opened and number of passengers entering / exiting
+    ...
+}
+
+CfgMsgRecepIndicators ::= SEQUENCE {
+    msgDictionary   CfgMsgDictionary                    OPTIONAL,
+    messages SEQUENCE (SIZE(1..8, ...)) OF DSRCmsgID    OPTIONAL,  
+    --DSRCmsgID imported from DSRC
+    ...
+}
+
+-- Indicate which dictionary type
+CfgMsgDictionary ::= ENUMERATED {
+    sae     (1),
+    etsi    (2),
+    iso     (3),
+    ...
+}
+
+-- The following are criteria by which the associated event will be reported 
+CfgRoadwayEvents ::= SEQUENCE {
+    obstacleDetected        BOOLEAN,
+    adverseRoadSurface      BOOLEAN,
+    -- Adverse road surface condition (non-weather related: potholes, road roughness).
+    trafficSigEncounters    CfgTrafficSigEncounters OPTIONAL,
+    -- Traffic signal related parameters
+    trfsigLightOut          BOOLEAN,
+    trfsigRoadGeoMismatch   BOOLEAN,
+    roadSignInfo            CfgRoadSignInfo         OPTIONAL,
+    lowLaneMarkReflect      INTEGER (1..100)        OPTIONAL,
+    -- Identify types of roadsigns and report back reflectivity
+    -- Low lane marking retro reflectivity (falls below a specified threshold 
+    -- in % light returned)
+    roadsignIncnstncy       BOOLEAN,
+    -- Roadsign inconsistency or unexpected closure (posted sign inconsistent 
+    -- with on-board map)
+    laneGeoIncnstncy        BOOLEAN,
+    -- Lane geometry inconsistency (difficult to interpret because of being covered
+    -- up or ambiguous, or different from on-board map)
+    incidentDetect          BOOLEAN,
+    -- Incident detection (car accident, wrong way driver, slowdown in 
+    -- opposite direction)
+    workZoneCharDetect      BOOLEAN,
+    -- Detection of work zone characteristics: workers present, lane shifts and 
+    -- lane closures
+    inclWeatherDetect       BOOLEAN,
+    -- Detection of inclement weather or weather-related road surface 
+    -- condition (SAE J2945/3 - heavy rain, fog, wind, ice, snow)
+    railrdCrossActivated    BOOLEAN,
+    -- Railroad crossing activated
+    drawBridgeActivated     BOOLEAN,
+    -- Draw bridge activated
+    ...
+}
+
+CfgTrafficSigEncounters ::= SEQUENCE {
+    intersections           SEQUENCE (SIZE(1..100)) OF IntersectionID   OPTIONAL,
+    -- Intersection IDs typically used in SPAT and MAP messsages
+    trfcsigApproachDelay    INTEGER (1..3600)   OPTIONAL, 
+    -- In seconds, triggered if higher 
+    trfsigApproachSpeed     INTEGER (1..200)    OPTIONAL, 
+    -- In KPH, triggered if lower
+    trfsigArrivalGreen      BOOLEAN             OPTIONAL,
+    trfsigArrivalRed        BOOLEAN             OPTIONAL,
+    trfsigPedDelay          INTEGER (1..300)    OPTIONAL, 
+    -- In seconds, triggered if higher
+    trfsigSpatMismatch      BOOLEAN             OPTIONAL,
+    trfsigSpatTimingError   BOOLEAN             OPTIONAL,
+    ...
+}
+
+CfgRoadSignInfo ::= SEQUENCE {
+        roadsignDetection       CfgRoadSignTypes,
+        -- Road sign types
+        lowRoadsignReflect1     INTEGER (1..250)    OPTIONAL, 
+        -- Min threshold for 1st color
+        lowRoadsignReflect2     INTEGER (1..250)    OPTIONAL, 
+        -- Min threshold for 2nd color
+        
+        -- Low roadsign retroreflectivity (in cd/lx/m2 falls below a specified threshold)
+        -- Reflectivity threshold is dependent on the type of roadsign 
+        -- Reference: U.S.DOT, FHWA, Manual on Uniform Traffic Control Devices for 
+        -- Streets and Highways, 2009 Edition
+    ...
+}
+
+CfgRoadSignTypes ::= SEQUENCE {
+    whiteOnGreen    BOOLEAN     OPTIONAL,
+    blackOnYellow   BOOLEAN     OPTIONAL,
+    blackOnOrange   BOOLEAN     OPTIONAL,
+    whiteOnRed      BOOLEAN     OPTIONAL,
+    blackOnWhite    BOOLEAN     OPTIONAL,
+    octagon         BOOLEAN     OPTIONAL,
+    eqlatTriangle   BOOLEAN     OPTIONAL,
+    circle          BOOLEAN     OPTIONAL,
+    pennant         BOOLEAN     OPTIONAL,
+    pentagon        BOOLEAN     OPTIONAL,
+    crossbuck       BOOLEAN     OPTIONAL,
+    diamond         BOOLEAN     OPTIONAL,
+    trapezoid       BOOLEAN     OPTIONAL,
+    other           BOOLEAN     OPTIONAL,
+    -- Reference: U.S.DOT, FHWA, Manual on Uniform Traffic Control Devices for 
+    -- Streets and Highways, 2009 Edition
+    ...
+}   
+
+
+CfgCommSysPerfEvents ::= SEQUENCE {
+    j2945-1ChanBusyThresh   INTEGER (1..100)    OPTIONAL, 
+    -- Based on J2945/1 Channel busy percentage measured over last 100ms
+    rfDataRsuInfo           BOOLEAN             OPTIONAL,
+    numRsusObservedThresh   INTEGER (1..254)    OPTIONAL, 
+    -- Threshold for numOfRsusObserved
+    
+    -- RF Triggers:
+    rfV2xJamDetectThresh    INTEGER (1..140)    OPTIONAL,
+    -- 5.9 GHZ V2X Radio Jamming detection (if equipped)in -dBm 
+    j2945-1VehDensThresh    INTEGER (1..255)    OPTIONAL,
+    -- J2945/1 Vehicle Density in range exceeds specified threshold (number of vehicles)
+    j2945-1CqiBelowThresh   INTEGER (1..100)    OPTIONAL,
+    -- J2945/1 CQI falls below a specified threshold (poor link quality)
+    j2945-1TrackErrorThresh INTEGER (1..100)    OPTIONAL,
+    -- J2945/1 Tracking Error estimate exceed a specified threshold in meters.
+    
+    -- GNSS Performance Triggers:
+    gnssHdopExceedsThresh   INTEGER (1..20)     OPTIONAL,
+    -- HDOP exceeds a specified threshold
+    -- If stationary do not report more than once
+    gnssSatsBelowThresh     INTEGER (1..20)     OPTIONAL,
+    -- Satellites in view goes below a specified threshold
+    gnssJammingDetect       BOOLEAN             OPTIONAL,
+    -- Jamming detected
+    ...
+}
+
+CfgAveragedAndSummaryTriggers ::= CHOICE {
+    averagedTriggers        CfgAveragedTriggers,
+    summaryTriggers         CfgSummaryTriggers,
+    ...
+}
+
+CfgAveragedTriggers ::= SEQUENCE {
+    avgSpeed            BOOLEAN OPTIONAL, -- in KPH
+    avgStopDuration     BOOLEAN OPTIONAL, -- in Seconds
+    avgFuelConsumption  BOOLEAN OPTIONAL, -- in Liters
+    avgEmissions        BOOLEAN OPTIONAL,
+    avgNumOfOccupants   BOOLEAN OPTIONAL,
+    ...
+}
+
+CfgSummaryTriggers ::= SEQUENCE {
+    regTravelTime           BOOLEAN                 OPTIONAL,
+    -- Total travel time to traverse the region in seconds
+    regVehDistTraveled      BOOLEAN                 OPTIONAL,
+    -- Total vehicle distance traveled within the region (kilometers)
+    regVehTimeTraveled      BOOLEAN                 OPTIONAL,
+    -- Total vehicle time traveled within the region (seconds)
+    fuelConsumption         BOOLEAN                 OPTIONAL,
+    -- Total fuel consumption in liters
+    totalVehEmissions       BOOLEAN                 OPTIONAL,
+    -- Total vehicle emissions
+    numOfLowSpeedEvents     CfgLowSpeedCriteria     OPTIONAL, -- Low speed threshold
+    -- Number of times speed dropped below a low speed threshold (low speed threshold
+    -- must be greater than 5 Km/h)
+    timeStopped             CfgStoppedCriteria      OPTIONAL, -- Stopped speed threshold
+    -- Seconds spent at speed less than the specified stopped threshold
+    numOfStopped            CfgStoppedCriteria      OPTIONAL,
+    -- Number of times the speed fell below the specified stopped threshold
+    locOfStops              BOOLEAN                 OPTIONAL,
+    -- Each location and duration in seconds where the speed drops below the 
+    -- specified stopped threshold
+    regNumOfVehPassed       BOOLEAN                 OPTIONAL,
+    -- Number of vehicles passed over the configuration region
+    regNumOfSurpassedVeh    BOOLEAN                 OPTIONAL,
+    -- Number of vehicles that passed the recording vehicle over the configuration region
+    totalMsgsReceived       CfgMsgRecepIndicators   OPTIONAL,
+    -- Total messages received by the message type indicated in the configuration
+    ...
+}
+
+CfgLowSpeedCriteria ::= SEQUENCE {
+    lowSpeedThreshold   INTEGER (5..100),               -- In KPH
+    lowSpeedTimeThresh  INTEGER (1..30)     OPTIONAL,   -- In seconds
+    ...
+}
+
+CfgStoppedCriteria ::= SEQUENCE {
+    stoppedSpeedThreshold   INTEGER (1..30),    -- in KPH
+    amountOfTimeBelow       INTEGER (1..300),   -- in seconds
+    ...
+}
+
+
+END

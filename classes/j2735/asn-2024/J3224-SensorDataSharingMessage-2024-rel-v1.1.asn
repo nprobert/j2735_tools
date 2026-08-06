@@ -1,0 +1,358 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J3224
+-- Latest document release for this module is Aug 2022
+-- Filename: J3224-SensorDataSharingMessage-2024-rel-v1.1.asn 
+--
+
+SensorDataSharingMessage 
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+v2x-communications (1) technical-committees (1) v2x-vehicular-applications (8) 
+technical-reports (1) j3224 (3224) asn1-module (1) sensorDataSharingMessage (41) 
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS
+    Acceleration,
+    AccelerationSet4Way,
+    BasicVehicleClass,
+    DDateTime,
+    Elevation,
+    ElevationConfidence,
+    ExteriorLights,
+    Heading,
+    HeadingConfidence,
+    Latitude,
+    Longitude,
+    MsgCount,
+    Position3D,
+    PositionalAccuracy,
+    PositionConfidenceSet,
+    SemiMajorAxisAccuracy,
+    SemiMinorAxisAccuracy,
+    SemiMajorAxisOrientation,
+    Speed,
+    SpeedConfidence,
+    TemporaryID,
+    TimeConfidence,
+    VehicleHeight,
+    VehicleLength,
+    VehicleSize,
+    VehicleWidth,
+    VerticalAcceleration,
+    YawRate
+        FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) common (38) 
+		version-1 (1)  version-minor-1 (1)} WITH SUCCESSORS
+    Attachment,
+    AttachmentRadius,
+    PersonalDeviceUserType,
+    PropelledInformation
+        FROM PersonalSafetyMessage {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+        v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1)
+        j2735 (2735) part-0 (0) asn1-module (1) personalSafetyMessage (21) 
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    AccelerationConfidence,
+    YawRateConfidence
+        FROM ProbeVehicleData {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+        v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1)
+        j2735 (2735) part-0 (0) asn1-module (1) probeVehicleData (15) 
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS;
+
+SensorDataSharingMessage ::= SEQUENCE {
+    msgCnt MsgCount,
+    -- Sequence     number
+    sourceID        TemporaryID,
+    -- temporary vehicle ID / RSU ID. SDSM source.
+    equipmentType   EquipmentType,
+    -- Sender type
+    sDSMTimeStamp   DDateTime,
+    -- SDSM transmission time
+    refPos          Position3D,
+    -- Sender reference position
+    refPosXYConf    PositionalAccuracy,
+    refPosElConf    ElevationConfidence     OPTIONAL,
+    objects DetectedObjectList
+    -- detected     objects
+}
+
+EquipmentType ::= ENUMERATED{
+    unknown (0),
+    rsu     (1),
+    obu     (2),
+    vru     (3),
+    ...
+}
+
+DetectedObjectList::= SEQUENCE (SIZE(1..256)) OF DetectedObjectData
+
+DetectedObjectData::= SEQUENCE {
+    detObjCommon    DetectedObjectCommonData,
+    -- Common data for detected object
+    detObjOptData   DetectedObjectOptionalData OPTIONAL
+    -- Type specific optional data
+}
+
+DetectedObjectOptionalData ::= CHOICE {
+    detVeh      DetectedVehicleData,
+    -- Detected vehicle data
+    detVRU      DetectedVRUData,
+    -- Detected VRU data
+    detObst     DetectedObstacleData
+    -- Detected obstacle data
+}
+
+DetectedObjectCommonData::= SEQUENCE {
+    objType             ObjectType,
+    objTypeCfd          ClassificationConfidence,
+    objectID            ObjectID,
+    -- temporary ID assigned by source
+    measurementTime     MeasurementTimeOffset,
+    -- Detection time
+    timeConfidence      TimeConfidence,
+    pos                 PositionOffsetXYZ,
+    posConfidence       PositionConfidenceSet,
+    speed               Speed,
+    speedConfidence     SpeedConfidence,
+    speedZ              Speed OPTIONAL,
+    speedConfidenceZ    SpeedConfidence OPTIONAL,
+    heading             Heading,
+    headingConf         HeadingConfidence,
+    accel4way           AccelerationSet4Way OPTIONAL,
+    accCfdX             AccelerationConfidence OPTIONAL,
+    accCfdY             AccelerationConfidence OPTIONAL,
+    accCfdZ             AccelerationConfidence OPTIONAL,
+    accCfdYaw           YawRateConfidence OPTIONAL,
+    ...
+}
+
+DetectedVehicleData::= SEQUENCE {
+    lights                  ExteriorLights              OPTIONAL,
+    vehAttitude             Attitude                    OPTIONAL,
+    vehAttitudeConfidence   AttitudeConfidence          OPTIONAL,
+    vehAngVel               AngularVelocity             OPTIONAL,
+    vehAngVelConfidence     AngularVelocityConfidence   OPTIONAL,
+    size                    VehicleSize                 OPTIONAL,
+    height                  VehicleHeight               OPTIONAL,
+    vehicleSizeConfidence   VehicleSizeConfidence       OPTIONAL,
+    vehicleClass            BasicVehicleClass           OPTIONAL,
+    classConf               ClassificationConfidence    OPTIONAL,
+    ...
+}
+
+DetectedVRUData::= SEQUENCE {
+    basicType       PersonalDeviceUserType  OPTIONAL,
+    propulsion      PropelledInformation    OPTIONAL,
+    attachment      Attachment              OPTIONAL,
+    radius          AttachmentRadius        OPTIONAL
+}
+
+DetectedObstacleData::= SEQUENCE {
+    obstSize            ObstacleSize,
+    obstSizeConfidence  ObstacleSizeConfidence
+}
+
+ObjectType::= ENUMERATED{
+    unknown (0),
+    vehicle (1),
+    vru     (2),
+    animal  (3),
+    ...
+}
+
+ObjectID ::= INTEGER (0..65535)
+
+ClassificationConfidence ::= INTEGER (0..101)
+
+MeasurementTimeOffset ::= INTEGER (-1500..1500) -- LSB units of 1ms
+
+PositionOffsetXYZ ::= SEQUENCE {
+    offsetX     ObjectDistance,
+    offsetY     ObjectDistance,
+    offsetZ     ObjectDistance OPTIONAL
+}
+
+ObjectDistance ::=INTEGER(-32767..32767) --LSB units of 0.1 meters
+
+Attitude ::= SEQUENCE {
+    pitch   PitchDetected,
+    roll    RollDetected,
+    yaw     YawDetected
+}
+
+PitchDetected ::= INTEGER (-7200..7200)
+    -- LSB units of 0.0125 degrees (signed)
+    -- range of -90 to 90 degrees
+
+RollDetected ::= INTEGER (-14400..14400)
+    -- LSB units of 0.0125 degrees (signed)
+    -- range of -180 to 180 degrees
+
+YawDetected ::= INTEGER (-14400..14400)
+    -- LSB units of 0.0125 degrees (signed)
+    -- range of -180 to 180 degrees
+
+AttitudeConfidence ::= SEQUENCE {
+    pitchConfidence     HeadingConfidence,
+    rollConfidence      HeadingConfidence,
+    yawConfidence       HeadingConfidence
+}
+
+AngularVelocity ::= SEQUENCE {
+    pitchRate   PitchRate,
+    rollRate    RollRate
+}
+
+PitchRate ::= INTEGER (-32767..32767)
+    -- LSB units of 0.01 degrees per second (signed)
+    -- unavailable (32767)
+
+RollRate ::= INTEGER (-32767..32767)
+    -- LSB units of 0.01 degrees per second (signed)
+    -- unavailable (32767)
+
+AngularVelocityConfidence ::= SEQUENCE {
+    pitchRateConfidence PitchRateConfidence OPTIONAL,
+    rollRateConfidence RollRateConfidence OPTIONAL
+}
+
+PitchRateConfidence ::= ENUMERATED {
+    unavailable (0), -- B'000 Not Equipped with angular velocity status
+    -- or angular velocity status is unavailable
+    degSec-100-00 (1), -- B'001 100 deg/sec
+    degSec-010-00 (2), -- B'010 10 deg/sec
+    degSec-005-00 (3), -- B'011 5 deg/sec
+    degSec-001-00 (4), -- B'100 1 deg/sec
+    degSec-000-10 (5), -- B'101 0.1 deg/sec
+    degSec-000-05 (6), -- B'110 0.05 deg/sec
+    degSec-000-01 (7)  -- B'111 0.01 deg/sec
+}
+
+RollRateConfidence ::= ENUMERATED {
+    unavailable (0), -- B'000 Not Equipped with angular velocity status
+    -- or angular velocity status is unavailable
+    degSec-100-00 (1), -- B'001 100 deg/sec
+    degSec-010-00 (2), -- B'010 10 deg/sec
+    degSec-005-00 (3), -- B'011 5 deg/sec
+    degSec-001-00 (4), -- B'100 1 deg/sec
+    degSec-000-10 (5), -- B'101 0.1 deg/sec
+    degSec-000-05 (6), -- B'110 0.05 deg/sec
+    degSec-000-01 (7)  -- B'111 0.01 deg/sec
+}
+
+VehicleSizeConfidence ::= SEQUENCE {
+    vehicleWidthConfidence      SizeValueConfidence,
+    vehicleLengthConfidence     SizeValueConfidence,
+    vehicleHeightConfidence     SizeValueConfidence OPTIONAL
+}
+
+ObstacleSize ::= SEQUENCE {
+    width   SizeValue,
+    length  SizeValue,
+    height  SizeValue   OPTIONAL
+}
+
+ObstacleSizeConfidence ::= SEQUENCE {
+    widthConfidence     SizeValueConfidence,
+    lengthConfidence    SizeValueConfidence,
+    heightConfidence    SizeValueConfidence     OPTIONAL
+}
+
+SizeValue ::= INTEGER (0..1023) -- LSB units are 10 cm with a range of >100 meters
+
+SizeValueConfidence ::= ENUMERATED {
+    unavailable (0),
+    size-100-00 (1),    -- (100 m)
+    size-050-00 (2),    -- (50 m)
+    size-020-00 (3),    -- (20 m)
+    size-010-00 (4),    -- (10 m)
+    size-005-00 (5),    -- (5 m)
+    size-002-00 (6),    -- (2 m)
+    size-001-00 (7),    -- (1 m)
+    size-000-50 (8),    -- (50 cm)
+    size-000-20 (9),    -- (20 cm)
+    size-000-10 (10),   -- (10 cm)
+    size-000-05 (11),   -- (5 cm)
+    size-000-02 (12),   -- (2 cm)
+    size-000-01 (13)    -- (1 cm)
+}
+
+END

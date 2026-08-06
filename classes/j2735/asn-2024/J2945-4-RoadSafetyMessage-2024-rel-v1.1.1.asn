@@ -1,0 +1,437 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J2945/4
+-- Latest document release for this module is May 2023
+-- Filename: J2945-4-RoadSafetyMessage-2024-rel-v1.1.1.asn 
+--
+
+RoadSafetyMessage 
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+j2945 (2945) slash-4 (4) asn1-module (1) roadSafetyMessage (39) 
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS
+    DDate,
+    DDateTime,
+    DescriptiveName,
+    DTime,
+    FrictionInformation,
+    MsgCount,
+    ObstacleDistance,
+    Position3D,
+    RegulatorySpeedLimit,
+    RoadAuthorityID,
+    TemporaryID
+        FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1) 
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5) 
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) common (38) 
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    SpeedAdvice
+        FROM SPAT {joint-iso-itu-t (2) country (16) us (840) organization (1) 
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5) 
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) 
+        signalPhaseAndTimingMessage (9) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    Circle,
+    Zoom
+        FROM TravelerInformation {joint-iso-itu-t (2) country (16) us (840) organization (1) 
+		sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5) 
+		technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) travelerInformation (20) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    NTCIPEssVisibility
+        FROM RoadWeatherMessage {joint-iso-itu-t (2) country (16) us (840) organization (1) 
+		sae (114566) v2x-communications (1) technical-committees (1) 
+        v2x-core (5) technical-reports (1) j2945 (2945) slash-3 (3) 
+        asn1-module (1) roadWeatherMessage (0) 
+		version-2 (2) version-minor-1 (1)} WITH SUCCESSORS
+    ResponderGroupAffected,
+    ITIScodes,
+    VehicleGroupAffected
+        FROM ITIS {joint-iso-itu-t (2) country (16) us (840) organization (1) 
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5) 
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) itis (6) 
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    ITISgroups
+        FROM J2540ITIS {joint-iso-itu-t(2) country(16) us(840) organization(1) 
+		sae(114566) v2x-communications(1) technical-committees(1) v2x-core(5) 
+		standards(1) itis-phrase-lists(2540) part-2(2) asn1(1) 
+		major-version-1(1) minor-version-1 (1)} WITH SUCCESSORS;
+
+-- Road Safety Message is abbreviated as RSM in type definitions and comments below
+RoadSafetyMessage ::= SEQUENCE {
+    -- This mandatory container describes generic information about the event.
+    commonContainer     CommonContainer, 
+    
+    -- up to 4 application content containers, may be repeated or different ones
+    content             SEQUENCE (SIZE(1..4)) OF ContentContainer,
+    ...
+}
+
+-- CommonContainer is mandatory and applies to all RSMs
+CommonContainer ::= SEQUENCE {
+    eventInfo         EventInfo,       
+    -- Includes eventID, start/end date/times, eventRecurrance, causeCodes
+    regionInfo        SEQUENCE      (SIZE(1..4)) OF RegionInfo,    
+    -- Includes referencePoint, applicableHeading, roadWidth (pathWidth), approachLanes (approachRegion)
+    crossLinking      CrossLinking  OPTIONAL,    
+    -- Allows linking to other messages or content
+    ...
+}
+
+ContentContainer ::= CHOICE {
+    -- The following application containers describe use-case specific
+    -- information about the event.
+    rszContainer           ReducedSpeedZoneContainer,   
+    laneClosureContainer   LaneClosureContainer,        
+    curveContainer         CurveContainer,              
+    dynamicInfoContainer   DynamicInfoContainer,        
+    -- Traditional "DMS"-type display
+    incidentsContainer     IncidentsContainer,          
+    -- Typically collisions or point-based disruptions
+    situationalContainer   SituationalContainer,        
+    -- This contains situational information that may apply to multiple applications
+    ...
+}
+
+-- Optional container describing conditions that may be present in a curve of the roadway
+CurveContainer ::= SEQUENCE {
+    advisorySpeed     SpeedAdvice,                     
+    -- Recommended speed limit for the curve
+    surfaceCondition  FrictionInformation   OPTIONAL,  
+    -- Data describing the surface conditions of the road
+    minRadius         Radius                OPTIONAL,  
+    -- Minimum radius of the curve in meters
+    bankAngle         BankAngle             OPTIONAL,  
+    -- Maximum (most extreme) bank angle present along the curve
+    curveRegion       RegionInfo            OPTIONAL,  
+    -- Describes geometry of lanes or polygon in the curve
+    ...
+}
+
+-- Context provided by CommonContainer codes
+DynamicInfoContainer ::= SEQUENCE {
+    priority          ENUMERATED {low-priority      (0), 
+                                  medium-priority   (1), 
+                                  high-priority     (2), 
+                                  critical          (3)},
+    dmsSignString     SEQUENCE SIZE(1..12) OF ShortString,
+    applicableRegion  RegionInfo,    -- The location/region for which the information applies
+    ...     
+}
+
+IncidentsContainer ::= SEQUENCE {
+    responderType       SEQUENCE (SIZE(1..5)) OF ResponderGroupAffected OPTIONAL,
+    incidentLocation    RegionInfo,      -- May be a point (circle with 0 radius, or a small radius)
+    ...
+}
+
+LaneClosureContainer ::= SEQUENCE {
+    laneStatus          SEQUENCE (SIZE(1..10, ...)) OF LaneInfo OPTIONAL, 
+    -- Lane status (open/closed) and closure offset from ref point
+    laneStatusVaries    Activity    OPTIONAL, 
+    -- An indication that specific lanes that are closed may vary over the duration
+    closureRegion       RegionInfo,
+    ...
+}
+
+-- Optional container describing a zone where reduced speed is required, maybe a workzone or 
+-- other type of zone (e.g., school).
+-- Abbreviated as rsz or RSZ in various comments and type definitions below.
+ReducedSpeedZoneContainer ::= SEQUENCE {
+    speedLimit          RegulatorySpeedLimit,   -- Speed limit associated with event
+    rszRegion           RegionInfo,             -- Describes region of reduced speed zone
+    ...
+}
+
+-- Provides situaltional awareness that applies to multiple other application specific containers
+SituationalContainer ::= SEQUENCE {
+    obstructions        Obstructions          OPTIONAL,     -- Location, size
+    visibility          NTCIPEssVisibility    OPTIONAL,     -- An estimate of the surface visibility
+    peoplePresent       Activity              OPTIONAL,     
+    -- An indication that pedestrians are expected to be present (workers in a construction zone,
+    -- children in a school zone, etc)
+    anomalousTraffic    Activity              OPTIONAL,     
+    -- An indication that vehicles may be on, entering, or leaving the roadway 
+    applicableRegion    RegionInfo,                         
+    -- The location/region for which the information applies
+    ...
+}
+
+-- Frames
+
+ApplicableHeading ::= SEQUENCE {
+    heading         HeadingDeg,   
+    -- Heading in 1 degree increments, message applies to heading +/- tolerance
+    tolerance       Tolerance,    
+    -- Tolerance in 1 degree increments
+    ...
+}
+
+-- Provides choice of methods to describe a region, i.e., lane based or other more general region
+-- definitions (e.g. polygon, etc.)
+AreaType ::= CHOICE {
+    broadRegion     BroadRegion,    -- Polygon or Circle
+    paths           PathList,       -- One or more coarse "lanes" (or roads) with a width
+    ...
+}
+
+AudioLink ::= SEQUENCE {
+    amChannel           INTEGER (531..1710)        OPTIONAL,
+    fmChannel           INTEGER (65800..108009)    OPTIONAL,
+    satelliteChannel    INTEGER (1..9999)          OPTIONAL,
+    urlChannel          IA5String (SIZE(1..500))   OPTIONAL,
+    ...
+}
+
+BroadRegion ::= SEQUENCE {
+    applicableHeading   ApplicableHeading,  
+    -- Provide so map matching algs can easily determine direction of travel
+    broadArea           BroadRegionArea,
+    ...
+}
+
+BroadRegionArea ::= CHOICE {
+    polygon            RSMPolygon,
+    circle             Circle,
+    ...
+}
+
+CrossLinking ::= SEQUENCE {
+    audioLinks      SEQUENCE (SIZE(1..4, ...)) OF AudioLink         OPTIONAL,
+    visualLink      SEQUENCE (SIZE(1..4, ...)) OF VisualLink        OPTIONAL,
+    rsmLink         SEQUENCE (SIZE(1..4, ...)) OF EventIdentifier   OPTIONAL,
+    ...
+}
+
+EventIdentifier ::= SEQUENCE {
+    operatorID      RoadAuthorityID,    -- A globally unique regional assignment value
+                                        -- typically assigned to a regional DOT authority
+    uniqueID        TemporaryID,        -- A unique ID assigned to the event by the operator
+    ...
+}
+
+-- Contains info related to event start/end date/times, recurrence, cause codes
+EventInfo ::= SEQUENCE {
+    eventID           EventIdentifier,                  -- Uniquely assigned ID for this event
+    eventUpdate       MsgCount,                         
+    -- An incrementing revision number to indicate changes to a previous transmission of this information
+    eventCancellation Activity,                         
+    -- A flag indicating that this event has been cancelled (in particular, prior to the indicated endTime)
+    startDateTime     DDateTime,                        -- Event start date and time
+    endDateTime       DDateTime        OPTIONAL,        
+    -- Event end date and time (applies to current message instance). Can be omitted if indefinite or 
+    -- unknown, can be used to calculate the validity time duration of the message.
+    eventRecurrence   SEQUENCE (SIZE(1..5, ...)) OF EventRecurrence OPTIONAL,                    
+    -- Indicates the date/time periods for which an event is active. Up to 5 periods may be defined
+    causeCode         ITISgroups,                       -- List of possible events
+    subCauseCode      ITIScodes        OPTIONAL,        -- List of possible events (use-case specific)
+    affectedVehicles  SEQUENCE (SIZE(1..10, ...)) OF VehicleGroupAffected OPTIONAL,    
+    -- List of affected vehicle classifications
+    ...
+}
+
+-- Defines applicable periods for an event.
+EventRecurrence ::= SEQUENCE {
+    startTime   DTime  OPTIONAL,  -- Time of day this period starts
+    endTime     DTime  OPTIONAL,  -- Time of day this period ends
+    startDate   DDate  OPTIONAL,  -- Date this period starts
+    endDate     DDate  OPTIONAL,  -- Date this period ends
+    -- Define days of the week for applicable periods (used by EventRecurrence)
+    monday      BOOLEAN,
+    tuesday     BOOLEAN,
+    wednesday   BOOLEAN,
+    thursday    BOOLEAN,
+    friday      BOOLEAN,
+    saturday    BOOLEAN,
+    sunday      BOOLEAN,
+    exclusion   BOOLEAN     OPTIONAL,  
+    -- exclusion: TRUE: The period defined here is excluded, i.e., the period is NOT applicable 
+    -- to the event
+    ...
+}
+
+-- For each lane, status (open/closed) and closure offset from reference point
+LaneInfo ::= SEQUENCE {
+    lanePosition      RSMLanePosition,            -- Where lanePosition 1 is always the leftmost lane
+    laneClosed        LaneClosed,                 -- TRUE:lane closed, FALSE:lane open
+    laneCloseOffset   ObstacleDistance OPTIONAL,  -- Distance from ref point to lane closure in meters
+    ...
+}
+
+-- Replaces J2735's NodeOffsetPointXY in the RSM
+NodePointLLE ::= CHOICE {
+    -- Nodes with lat/long/elev content
+    node-3Dabsolute   Position3D,       -- Absolute lat/long/elevation
+    node-3Doffset     Offset3D,         -- Offsets of fractional deg (lat/long) and meters (elev)
+    ...
+}
+
+Obstructions ::= SEQUENCE { 
+    location        Position3D,
+    description     ITIScodes   OPTIONAL,
+    ...
+}
+
+-- Provides lat/long/elev offsets from a known point
+Offset3D ::= SEQUENCE {
+    lat-offset      LatOffset,
+    long-offset     LongOffset,
+    elev-offset     ElevOffset    OPTIONAL,
+    ...
+}
+
+Path ::= SEQUENCE {
+    pathWidth       INTEGER (0..1000), -- Width of the Path in units of 10cm
+    pathPoints      PathPoints,
+    ...
+}
+
+PathList ::= SEQUENCE (SIZE(1..10), ...) OF Path
+
+PathPoints ::= SEQUENCE (SIZE(2..63), ...) OF NodePointLLE
+
+-- Contains info related to event heading, location, reference point, length
+RegionInfo ::= SEQUENCE {
+    referencePoint          Position3D,                        
+    -- Reference position, may be start of event (default) or arbitrary location.
+    locationUncertainty     RegionUncertainty      OPTIONAL,   
+    -- A measure of how accurate the region is known
+    referencePointType      ReferencePointType     OPTIONAL,   
+    -- startOfEvent or arbitrary. If not provided, default to startOfEvent.
+    descriptiveName         DescriptiveName        OPTIONAL,   
+    -- Plain text (human readable) name of roadway or region
+    scale                   Zoom                   OPTIONAL,   
+    -- Used to scale offsets in the AreaType if necessary
+    approachRegion          AreaType               OPTIONAL,   
+    -- Area preceding the location of the event, presumably where an alert/warning would be presented
+    -- to a driver
+    ...
+}
+
+RegionUncertainty ::= CHOICE {
+    alongPath            Offset3D,      -- lateral/longitudinal
+    inCoordinateFrame    Offset3D,      -- latitude/longitude 
+    ...
+}
+
+RSMPolygon ::= SEQUENCE (SIZE(3..63)) OF NodePointLLE -- May be defined by abs lat/lon/elev or offsets
+
+VisualLink ::= SEQUENCE {
+    urlLink IA5String (SIZE(1..500)) OPTIONAL,
+    ...
+}
+
+-- ELEMENTS
+
+Activity ::= BOOLEAN   
+-- TRUE: Relevant activity is occurring, FALSE: Relevant activity is not happening or inconclusive
+
+-- Use scale (Zoom) to to modify the units for nodes' latitude and longitude (but not elevation). 
+-- For example the default units specified for latitude and longitude are tenths of microdegrees. 
+-- The scale factor is not applied to the elevation if present.
+LatOffset  ::= INTEGER (-16384..16383) -- Offset 0.1 microdegrees (unless scale is provided)
+LongOffset ::= INTEGER (-16384..16383) -- Offset 0.1 microdegrees (unless scale is provided)
+ElevOffset ::= INTEGER (-4096..4095)   -- Offset in increments of 0.1 meters (scale not applied)
+
+BankAngle ::= INTEGER (-512..512)  -- Tenths of degrees
+
+HeadingDeg ::= INTEGER (0..359)  -- Heading in 1 degree increments, 0 = North, incrementing to the East
+
+LaneClosed ::= BOOLEAN           -- TRUE: Lane is closed, FALSE: lane is not closed
+
+Radius ::= INTEGER (0..65535)    -- Measured in meters
+
+ReferencePointType ::= ENUMERATED {
+    startOfEvent (0),
+    arbitrary    (1),
+    ...
+}
+
+RSMLanePosition ::= INTEGER (1..32) -- Lane position where lane 1 is always leftmost lane
+
+ShortString ::= IA5String(SIZE(1..20))
+
+Tolerance ::= INTEGER (0..180)  -- In 1 degree increments
+
+END
+
+

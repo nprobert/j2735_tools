@@ -1,0 +1,445 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J2945/C
+-- Latest document release for this module is Jun 2022
+-- Filename: J2945-C-ProbeDataReport-2024-rel-v1.1.asn 
+--
+ProbeDataReport
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+j2945 (2945) slash-c (12) asn1-module (1) probeDataReport (1)
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS     
+    DTime, 
+	DDateTime, 
+	IntersectionID, 
+	Speed, 
+	Heading, 
+	PositionalAccuracy, 
+	Position3D, 
+    RoadAuthorityID, 
+	VehicleSize, 
+	VehicleMass 
+		FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) common (38) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+
+    NtcipEssData 
+		FROM RoadWeatherMessage {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2945 (2945) slash-3 (3) asn1-module (1) roadWeatherMessage (0) 
+		version-2 (2) version-minor-1 (1)} WITH SUCCESSORS
+
+    ConfigId 
+		FROM ProbeDataConfig {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2945 (2945) slash-c (12) asn1-module (1) probeDataConfig (0) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS;
+    
+ProbeDataReportMessage ::= SEQUENCE {
+    configId            ConfigId,
+    reportChar          ReportCharacteristics,
+    roadAuthorityID     RoadAuthorityID             OPTIONAL,
+    instantaneousRecs   RptInstantaneousRecords     OPTIONAL,
+    avgAndSumRec        RptAveragedAndSummaryRecord OPTIONAL,
+    ...
+} (WITH COMPONENTS {..., instantaneousRecs PRESENT} | 
+   WITH COMPONENTS {..., avgAndSumRec PRESENT})
+
+ReportCharacteristics ::= SEQUENCE {
+    -- The next four data elements are mandatory in every report record
+    timeStamp           DDateTime,
+    position            Position3D,
+    posAccuracy         PositionalAccuracy,
+    velocity            RptVelocity,
+    vehicleClass        RptVehicleClass     OPTIONAL, -- FHWA classes
+    devType             RptDevType          OPTIONAL, -- OBU Type
+    vehicleSize         VehicleSize         OPTIONAL, 
+    vehicleMass         VehicleMass         OPTIONAL, 
+    vehPassengerCount   INTEGER (1..255)    OPTIONAL,
+    ...
+}
+
+-- The following are FHWA defined vehicle classes (types)
+RptVehicleClass ::= ENUMERATED  {
+    motorcycles                         (1),
+    passengerCars                       (2),
+    other2axle4tireSingleUnitVehs       (3),
+    buses                               (4),
+    twoAxle6TireSingleUnitTrucks        (5),
+    threeAxleSingleUnitTrucks           (6),
+    fourOrMoreAxleSingleUnitTrucks      (7),
+    fourOrFewerAxleSingleTrailerTrucks  (8),
+    fiveAxleSingleTrailerTrucks         (9),
+    sixOrMoreAxleSingleTrailerTrucks    (10),
+    fiveOrFewerAxleMultiTrailerTrucks   (11),
+    sixAxleMultiTrailerTrucks           (12),
+    sevenOrMoreAxleMultiTrailerTrucks   (13),
+    ...
+}
+
+-- Device Types (OBU type)
+RptDevType ::= SEQUENCE {
+    oemOrAftermarket    BOOLEAN,
+    canOrIvnConnected   BOOLEAN,
+    mcoCapable          BOOLEAN OPTIONAL,
+    ...
+}
+
+RptInstantaneousRecords ::= SEQUENCE (SIZE(1..255, ...)) OF RptInstantaneousRecord  
+
+RptInstantaneousRecord ::= SEQUENCE {
+    timeOfInstantRec    DDateTime,
+    locOfInstantRec     Position3D,
+    accOfPosition       PositionalAccuracy,
+    velOfInstantRec     RptVelocity,
+    record              RptInstantaneousRecordData  OPTIONAL,
+    ...
+}
+
+-- Heading and Speed imported from J2735
+RptVelocity ::= SEQUENCE {
+    speed       Speed,            -- in km/hr
+    speedStdDev StdDev  OPTIONAL, -- in km/hr
+    heading     Heading OPTIONAL,
+    ...
+}
+
+RptInstantaneousRecordData ::= CHOICE {
+    intervalEvents      RptIntervalEvents,
+    vehEvents           RptVehicleEvents,
+    roadwayEvents       RptRoadwayEvents,
+    commSysPerfEvents   RptCommSysPerfEvents,
+    ...
+}
+
+RptAveragedAndSummaryRecord ::= SEQUENCE {
+    startTime       DDateTime,  --Time at the start of data capture
+    startLoc        Position3D, --Position at startTime
+    startAccOfPos   PositionalAccuracy, --Accuracy of starting position
+    endTime         DDateTime,  --Time at the end of data capture
+    endLoc          Position3D, --Position at endTime
+    endAccOfPos     PositionalAccuracy, --Accuracy of ending position
+    record          RptAvgAndSummaryRecordData,
+    ...
+}
+
+RptAvgAndSummaryRecordData ::= CHOICE {
+    averagedRecord      RptAveragedRecord,
+    summaryRecord       RptSummaryRecord,
+    ...
+}
+    
+RptIntervalEvents   ::= SEQUENCE {
+    wiperStatus     RptWiperStatus      OPTIONAL,
+    vehCount        INTEGER (0..10000)  OPTIONAL, 
+    -- Number of V2V-equipped vehicles encountered
+    weatherData     RptVehicleReport    OPTIONAL,
+    transitVehData  RptTransitVehData   OPTIONAL,
+    numOfOccupants  INTEGER (0..255)    OPTIONAL, 
+    -- 254 indicates > 253, 255 is reserved
+    ...
+}
+
+RptVehicleReport ::= SEQUENCE (SIZE(1..32)) OF NtcipEssData 
+-- NtcipEssData is defined in RWM (J2945/3)
+
+RptTransitVehData ::= SEQUENCE {
+    currNumPasngers INTEGER (0..255)    OPTIONAL,
+    avgNumPasngers  INTEGER (0..255)    OPTIONAL,
+    trnstVehSchAdh  INTEGER (-200..55)  OPTIONAL, 
+    -- Neg nums indicates running behind, 
+    -- positive indicates running ahead of schedule, in minutes
+    ...
+}
+    
+
+-- For each below, set to TRUE if the correpsonding event occured (triggered)
+RptVehicleEvents ::= CHOICE {
+    headLights          NULL,
+    fogLights           NULL,
+    hazardLights        NULL,
+    kinematicEvents     RptKinematicEvents,
+    wiperStatusChange   NULL,
+    lowSpeed            NULL,
+    resumedSpeed        NULL,
+    vehEntrsExitsRegion NULL,
+    emerVehDetect       NULL,
+    emerVehLightBar     NULL,
+    reqTspEvp           NULL,
+    transitVehPassCnt   NULL,
+    transitVehDoor      NULL,
+    v2xMsgRecption      NULL, 
+    -- Indicates reception of the V2X message identified in the configuration. 
+    driverAlertsAndWarnings     RptDriverAlertsAndWarnings,
+    ...
+}
+
+RptDriverAlertsAndWarnings ::= CHOICE {
+    j2945Slash1Eebl         NULL,
+    -- Emergency Electronic Brake Lights
+    j2945Slash1Fcw          NULL,
+    -- Forward Crash Warning
+    j2945Slash1BswLcw       NULL,
+    -- Blind Spot Warning/Lane Change Warning
+    j2945Slash1Ima          NULL,
+    -- Intersection Movement Assist
+    j2945Slash1Lta          NULL,
+    -- Left Turn Assist
+    j2945Slash1Clw          NULL,
+    -- Control Loss Warning
+    redLightViolationWarn   NULL,
+    emerVehAlert            NULL,
+    otherAlert              NULL,
+    otherWarning            NULL,
+    ...
+}
+
+RptKinematicEvents ::= SEQUENCE {
+    events              RptEvents,
+    hysteresis          RptHysteresisRecord OPTIONAL,
+    ...
+}
+
+RptEvents ::= CHOICE {
+    absActive           BOOLEAN,
+    tractionCtlLoss     BOOLEAN,
+    stabilityCtlActive  BOOLEAN,
+    hardBraking         BOOLEAN, -- Defined in J2945/1
+    swerve              BOOLEAN,
+    ...
+}
+
+RptHysteresisRecord ::= SEQUENCE (SIZE(1..20)) OF RptHysteresis
+
+RptHysteresis ::= SEQUENCE {
+    time                DTime, 
+    position            Position3D, 
+    positionalAccuracy  PositionalAccuracy  OPTIONAL,
+    velocity            RptVelocity,
+    ...
+}
+
+RptRoadwayEvents ::= CHOICE {
+    obstacleDetected        NULL,
+    adverseRoadSurface      RptRoadRoughness,
+    trfsigEncounters        RptTrafficSigEncounters,
+    trfsigLightOut          NULL,
+    trfsigRoadGeoMismatch   NULL,
+    roadsignDetection       NULL,
+    lowRoadsignReflect      NULL,
+    lowLaneMarkReflect      NULL,
+    roadsignIncnstncy       NULL,
+    laneGeoIncnstncy        NULL,
+    incidentDetect          NULL,
+    workZoneCharDetect      NULL,
+    inclWeatherDetect       NULL,
+    railrdCrossActiv        NULL,
+    drawBridgeActiv         NULL,
+    ...
+}
+
+RptRoadRoughness ::= SEQUENCE {    
+    meanVerticalVariation       MeanVariation,      
+    verticalVariationStdDev     StdDev          OPTIONAL,
+    -- Standard deviation in microns    
+    meanHorizontalVariation     MeanVariation   OPTIONAL,   
+    horizontalVariationStdDev   StdDev          OPTIONAL,
+    -- Standard deviation in microns
+    ...
+}
+
+MeanVariation ::= INTEGER (0..25000)
+    -- Measured in microns (.001 mm)
+    -- Range is 0 to 25 mm (0 to 25000 microns)    
+    -- Measured in microns (.001 mm)
+
+StdDev ::= INTEGER (0..10000)
+
+
+RptTrafficSigEncounters ::= SEQUENCE {
+    intersectionID          IntersectionID  OPTIONAL, -- Imported from J2735
+    -- Received by OBU in SPAT and MAP messages
+    trafficMetrics          RptTrafficMetrics,
+    ...
+}
+
+RptTrafficMetrics ::= CHOICE {
+    trfsigApproachDelay     NULL,
+    trfsigApproachSpeed     NULL,
+    trfsigArrivalGreen      NULL,
+    trfsigArrivalRed        NULL,
+    trfsigPedDelay          NULL,
+    trfsigSpatMismatch      NULL,
+    trfsigSpatTimingError   NULL,
+    ...
+}
+
+RptCommSysPerfEvents ::= CHOICE {
+    j2945-1ChanBusy         NULL,
+    rfDataRsuInfo           OCTET STRING (SIZE(6)),
+    -- Report Source MAC / Layer 2 Source ID of any RSUs that we see/hear
+    numOfRsusObserved       INTEGER (1..255),  
+    -- Count of encountered RSUs if count higher than threshold 
+    rfV2xJamDetect          NULL,
+    j2945-1VehDens          NULL,
+    j2945-1CqiBelow         NULL,
+    j2945-1TrackingError    NULL,
+    gnssHdopExceeds         NULL,
+    gnssErrElipse           NULL,
+    gnssSatsBelow           NULL,
+    jammingDetect           NULL,
+    ...
+}
+
+RptWiperStatus ::= ENUMERATED {off, low, medium, high, ...}
+        
+RptAveragedRecord ::= SEQUENCE {
+    avgSpeed            Speed               OPTIONAL, 
+    -- in km/hr
+    speedStdDev         StdDev              OPTIONAL, 
+    -- in km/hr
+    avgStopDuration     INTEGER (1..36000)  OPTIONAL, 
+    -- in tenths of seconds up to an hour
+    avgStopStdDev       StdDev              OPTIONAL, 
+    -- in tenths of seconds
+    avgFuelConsumption  INTEGER (1..255)    OPTIONAL,
+    avgEmissions        RptEmissions        OPTIONAL,
+    avgNumOfOccupants   INTEGER (1..255)    OPTIONAL,
+    ...
+}
+
+RptSummaryRecord ::= SEQUENCE {
+    regTravelTime           INTEGER (1..3600)   OPTIONAL,
+    -- Total travel time to traverse the region in seconds
+    regVehDistTraveled      INTEGER (1..500)    OPTIONAL,
+    -- Total vehicle distance traveled in kilometers
+    regVehTimeTraveled      INTEGER (1..3600)   OPTIONAL,
+    -- Total vehicle time traveled within the region (seconds)
+    fuelConsumption         INTEGER (1..255)    OPTIONAL,
+    -- Total fuel consumption in liters
+    totalVehEmissions       RptEmissions        OPTIONAL,
+    -- Total vehicle emissions
+    numOfLowSpeedEvents     INTEGER (1..255)    OPTIONAL, -- Low speed threshold
+    -- Number of times speed dropped below a low speed threshold 
+    timeStopped             INTEGER (1..36000)  OPTIONAL, 
+    -- Total Stopped time in tenths of seconds up to an hour
+    numOfStopped            INTEGER (1..255)    OPTIONAL,
+    -- Number of times the speed fell below the specified stopped threshold
+    locOfStops              RptLocOfStops       OPTIONAL,
+    -- Each location and duration in seconds where the speed drops below 
+    -- the specified stopped threshold
+    regNumOfVehPassed       INTEGER (1..255)    OPTIONAL,
+    -- Number of vehicles passed over the configuration region
+    regNumOfSurpassedVeh    INTEGER (1..255)    OPTIONAL,
+    -- Number of vehicles that passed the recording vehicle over the configuration region
+    totalMsgsReceived       INTEGER (1..255)    OPTIONAL,
+    -- Total messages received by the message type indicated in the configuration
+    ...
+}
+
+RptEmissions ::= SEQUENCE {
+    hydrocarbons    INTEGER (1..1000) OPTIONAL, -- in parts per million
+    co              INTEGER (1..1000) OPTIONAL, -- in parts per million
+    co2             INTEGER (1..1000) OPTIONAL, -- in parts per billion
+    no              INTEGER (1..1000) OPTIONAL, -- in parts per million
+    no2             INTEGER (1..1000) OPTIONAL, -- in parts per billion
+    so2             INTEGER (1..1000) OPTIONAL, -- in parts per billion
+    o3              INTEGER (1..1000) OPTIONAL, -- in parts per 100 billion
+    -- Particulates of 10 micrometers or less in diameter
+    pm10            INTEGER (1..1000) OPTIONAL, -- in micrograms per cubic meter
+    -- Particulates of 2.5 micrometers or less in diameter
+    pm25            INTEGER (1..1000) OPTIONAL, -- in micrograms per cubic meter
+    ...
+}
+
+RptLocOfStops ::= SEQUENCE {
+    locationOfStop      Position3D,
+    locAccOfStop        PositionalAccuracy, -- Imported from J2735
+    durationOfStop      INTEGER (1..36000), -- in tenths of seconds up to an hour
+    ...
+}
+
+END
+
+ 

@@ -1,0 +1,269 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J2735 
+-- Latest document release for this module is TBD (not yet released)
+-- Filename: J2735-TrafficLightStatusMessage-2024-rel-v1.1.1.asn 
+--
+
+TrafficLightStatusMessage
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+j2735 (2735) part-0 (0) asn1-module (1) trafficLightStatusMessage (50) 
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS
+    DDateTime,
+    Latitude,
+    Longitude
+        FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) common (38) 
+		version-1 (1)  version-minor-1 (1)} WITH SUCCESSORS;
+
+TrafficLightStatusMessage ::= SEQUENCE { 
+    trafficLightID       TrafficLightID, 
+    -- identifier of the traffic light controller that provides the status 
+    -- information
+    long                Longitude   OPTIONAL,
+    -- longitude of the center of the intersection where the traffic light 
+    -- controller is located
+    lat                 Latitude    OPTIONAL,
+    -- latitude of the center of the intersection where the traffic light
+    -- controller is located
+    operationStatus     TrafficLightOperationStatus,
+    -- status of operations of traffic light controller
+    controllerStatus    TrafficLightControllerStatus,
+    -- status of traffic light controller 
+    cyclecounter        TimeInSecond-B16, 
+    -- time elapsed since current signal phase started
+    cycletime           TimeInSecond-B16, 
+    -- duration of signal phase
+    currentTime         DDateTime,
+    -- time detected
+    trafficLightStatus  TrafficLightStatusList,
+    -- signal state information
+    ...
+}
+
+TrafficLightStatusList ::= SEQUENCE (SIZE(1..255)) OF TrafficLightStatus
+
+TrafficLightStatus ::= SEQUENCE {
+    trafficLightType            TrafficLightType,
+    -- type of traffic light 
+    -- pedestrian traffic lights, bicycle traffic lights, etc
+    consecutiveTrafficLight     ConsecutiveTrafficLight,
+    -- interconnection information
+    -- When connecting two or more intersection traffic lights to one
+    -- traffic signal controller, it includes signal information of 
+    -- intersections other than main intersection
+    trafficLightIntervalType    TrafficLightIntervalType,
+    -- Type of traffic signal cycle (fixed, variable cycle)
+    pedestrianCall              PedestrianCall,
+    -- Whether pedestrian button is pressed or not
+    actuatedinterval            ActuatedInterval,
+    -- extended or actuated signal control cycle
+    permissiveNonProtected      PermissiveNonProtected,
+    -- permission/non-protection
+    lightingStatus              TrafficLightingStatus,
+    -- traffic light illuminated state
+    maxIntervalLength           TimeInSecond-B8,
+    -- max duration of signal light activation status
+    remainingTime               TimeInSecond-B8,
+    -- remaining time of the current signal state
+    directionCode               TrafficLightDirectionCode,
+    -- Direction of entry for vehicles that should obey this signal
+    reserved                    ReservedBit,
+    -- reserved field
+    ...
+}
+
+ActuatedInterval ::= BOOLEAN
+
+ConsecutiveTrafficLight ::= ENUMERATED {
+    none    (0),
+    first   (1),
+    second  (2),
+    ...
+}
+
+PedestrianCall ::= BOOLEAN 
+
+PermissiveNonProtected ::= ENUMERATED {
+    none        (0),  -- Non-protected movement is not allowed.
+    permissive  (1),  -- Non-protected movement is allowed.
+    ...
+}
+
+ReservedBit ::= BOOLEAN
+
+TimeInSecond-B16 ::= INTEGER (0..65535)
+
+TimeInSecond-B8 ::= INTEGER (0..255)
+-- 255 means invalid value
+
+TrafficLightControllerStatus ::= BIT STRING {
+    conflict            (0), 
+    -- Contradiction state is the state where signal operation is stopped due to 
+    -- conflicting signals, indicating all-red flashing at the entire intersection
+    -- If there is a contradiction or inconsistency, it is set to 1, and if it is 
+    -- normal, it is set to 0
+    center-comm-error   (1), 
+    -- If a communication failure with the center occurs, the value is set to 1,
+    -- indicating an abnormal communication status
+    -- If communication is normal, the value will be set to 0, indicating that the 
+    -- controller is operating independently
+    scu-comm-error      (2), 
+    -- If there is a communication problem with the Signal Control Unit(SCU), 
+    -- the value is set to 1
+    -- the value 1 indicates that there is a communication problem and the status of 
+    -- the signal output cannot be determined
+    -- If there is no communication problem with the SCU, the value is set to 0
+    -- It means that the communication is normal
+    reserved1           (3), 
+    -- the reserved field that is pre-allocated for future use in a data structure
+    reserved2           (4), 
+    reserved3           (5),
+    reserved4           (6),
+    reserved5           (7)
+} (SIZE(8, ...))
+
+TrafficLightDirectionCode ::= INTEGER (0..359) -- 0 degrees is due North
+
+TrafficLightID ::= CHOICE {
+    id  INTEGER,            -- 
+    oid OBJECT IDENTIFIER   -- for extensibility purposes
+}
+
+TrafficLightIntervalType ::= ENUMERATED {
+    static      (0),  -- interval is static 
+    variable    (1),  -- interval is variable
+    ...
+}
+
+TrafficLightOperationStatus ::= BIT STRING {
+    manual          (0),
+    -- If it is normal, it is set to 0, and otherwise, it is set to 1
+    flashing        (1),
+    -- If it is flashing, it is set to 1, and if it is normal, it is set to 0
+    off             (2),
+    -- a state of being turned off
+    -- If it is turned off, it is set to 1, and if it is normal, 
+    -- it is set to 0
+    actuated        (3),
+    -- If actuated system is in progress, it is set to 1, 
+    -- and if it is normal, it is set to 0
+    transition      (4),
+    -- If it is transition, it is set to 1, and if it is normal, 
+    -- it is set to 0
+    priority        (5),
+    -- If it is transition, it is set to 1, 
+    -- and if it is normal, it is set to 0
+    holding-phase   (6),
+    -- It is set to 1 when the priority signal is in service, and 0 
+    -- when it is not
+    reserved        (7)
+    -- the reserved field for future us
+} (SIZE(8, ...))
+
+TrafficLightingStatus ::= ENUMERATED {
+    off             (0),
+    red-on          (1),
+    yellow-on       (2),
+    green-on        (3),
+    red-blinking    (4),
+    yellow-blinking (5),
+    green-blinking  (6),
+    ...
+}
+
+TrafficLightType ::= ENUMERATED {
+    reserved        (0),
+    straight        (1),
+    left-turn       (2),
+    pedestrian      (3),
+    bicycle         (4),
+    right-turn      (5),
+    bus             (6),
+    u-turn          (7),
+    ...
+}
+
+END

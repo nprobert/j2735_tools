@@ -1,0 +1,470 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J2945/3
+-- Latest document release for this module is Jan 2022
+-- Filename: J2945-3-RoadWeatherMessage-2024-rel-v2.1.asn 
+--
+
+RoadWeatherMessage
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+j2945 (2945) slash-3 (3) asn1-module (1) roadWeatherMessage (0) 
+version-2 (2) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN
+
+IMPORTS
+	VehicleStatus 
+		FROM ProbeVehicleData {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) probeVehicleData (15) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+
+	FullPositionVector, 
+	RoadRoughness, 
+	VehicleSafetyExtensions 
+		FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) common (38) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+
+	TravelerDataFrameList 
+		FROM TravelerInformation {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) travelerInformation (20) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+
+	ITIStext 
+		FROM ITIS {joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+		v2x-communications (1) technical-committees (1) v2x-core (5) technical-reports (1) 
+		j2735 (2735) part-0 (0) asn1-module (1) itis (6) 
+		version-1 (1) version-minor-1 (1)} WITH SUCCESSORS;
+
+--
+-- Data elements that begin with "NTCIP" (all caps) are derived from NTCIP
+-- 1204 v04 MIB objects. 
+-- For example, the data element name "NTCIPEssPavementTreatmentLatitude"
+-- corresponds with the MIB entry "essPavementTreatmentLatitude". 
+-- See NTCIP 1204 v04 for additional information.
+--
+
+RoadWeatherMessage ::= CHOICE {
+    upload    RoadWeatherUpload,
+    download  RoadWeatherDownload,
+    ...
+}
+
+-- Upload messages are sent from vehicles to infrastructure
+RoadWeatherUpload ::= CHOICE {
+    vehicleReport   SEQUENCE (SIZE(1..32)) OF VehicleReport, 
+    citizenReport   SnapShot,
+    ...
+}
+
+VehicleReport ::= SEQUENCE {
+    snapShot         SnapShot,
+    wdmsFleetData    WDMSFleetData      OPTIONAL,
+    ...
+}
+
+-- Download messages are sent from infrastructure to vehicles
+RoadWeatherDownload ::= SEQUENCE {
+    travelerData    TravelerDataFrameList,
+    wdmsFleetData   WDMSFleetData OPTIONAL,
+    ...
+}
+
+WDMSFleetData ::= SEQUENCE {
+    pavementTreat   NtcipPavementTreatment  OPTIONAL,
+    routingAdvice   ITIStext           OPTIONAL,
+    ...
+}
+
+NtcipPavementTreatment ::= SEQUENCE {
+    latitude    NTCIPEssPavementTreatmentLatitude,  
+    longitude   NTCIPEssPavementTreatmentLongitude,
+    location    NTCIPEssPavementTreatmentLocation,
+    productType NTCIPEssPaveTreatProductType        OPTIONAL,
+    form        NTCIPEssPaveTreatProductForm        OPTIONAL,
+    percentage  NTCIPEssPercentProductMix           OPTIONAL,
+    amount      NTCIPEssPaveTreatmentAmount         OPTIONAL,
+    width       NTCIPEssPaveTreatmentWidth          OPTIONAL,
+    ...
+}
+
+NTCIPEssPavementTreatmentLatitude ::= INTEGER (-90000000..90000001)
+    -- The latitude in 10^-6 degrees of the pavement treatment system, per
+    -- WGS-84 datum
+
+NTCIPEssPavementTreatmentLongitude ::= INTEGER (-180000000..180000001)
+    -- The east longitude in 10^-6 degrees from the Prime Meridian of the 
+    -- pavement treatment system location
+
+NTCIPEssPavementTreatmentLocation ::= IA5String (SIZE(1..255))
+    -- A textual string indicating the location of the pavement treatment
+    -- system
+
+NTCIPEssPaveTreatProductType ::= ENUMERATED {
+    -- Indicates the type of treatment being applied to the road.
+    other (1),          -- any other type of treatment
+    sand (2),
+    dirt (3),
+    gravel (4),
+    cinders (5),
+    water (6),          -- used as a diluting agent
+    enhancedSalts (7),
+    naCl (8),
+    caCl (9),
+    mgCl (10),
+    cMA (11),           -- Calcium-Magnesium Acetate
+    kAC (12),           -- Potassium-Magnesium Acetate
+    naFormate (13),     -- Sodium Formate
+    naA (14),           -- Sodium Acetate
+    ...
+}
+
+NTCIPEssPaveTreatProductForm ::= ENUMERATED {
+    -- Indicates the condition of the treatment being applied to the road
+    other (1),
+    dry (2),
+    prewet (3),
+    liquid (4),
+    ...
+}
+
+NTCIPEssPercentProductMix ::= INTEGER (0..100)
+    -- Indicates the percentage of the total application mix by weight that
+    -- is of the type specified in essPaveTreatProductType
+
+NTCIPEssPaveTreatmentAmount ::= INTEGER (0..255)
+    -- Indicates quantity of the treatment being applied in kilograms per
+    -- lane kilometer
+
+NTCIPEssPaveTreatmentWidth ::= INTEGER (0..255)
+    -- Indicates the width of the spread of treatment in meters
+
+
+SnapShot ::= SEQUENCE {
+    thePosition     FullPositionVector,
+        -- data of the position and speed,
+    safetyExt       VehicleSafetyExtensions    OPTIONAL,
+    dataSet         VehicleStatus              OPTIONAL,
+        -- a sequence of data frames which encodes the data
+    ...,
+    weatherData     NtcipEssData                    OPTIONAL
+        -- Added by J2945/3
+}
+
+NtcipEssData ::= SEQUENCE {
+    airTemp         NtcipAirTemperature         OPTIONAL,
+    atmosphere      NtcipAtmosphericPressure    OPTIONAL,
+    wind            NtcipWind                   OPTIONAL,
+    humidity        NtcipRelativeHumidity       OPTIONAL,
+    dewpoint        NtcipDewPoint               OPTIONAL,
+    pavement        NtcipPavement               OPTIONAL,
+    visibility      NtcipVisibility             OPTIONAL,
+    visSituation    NtcipVisibilitySituation    OPTIONAL,
+    cloudSitiation  NtcipCloudSituation         OPTIONAL,
+    precipitation   NtcipPrecipitation          OPTIONAL,
+    solarRadiation  NtcipSolarRadiation         OPTIONAL,
+    ...
+}
+
+NtcipAirTemperature ::= SEQUENCE {
+    temperature         NTCIPEssAirTemperature,
+    measurementStdDev   TemperatureMeasurementStdDev    OPTIONAL, 
+    tempSensorHeight    NTCIPEssTemperatureSensorHeight OPTIONAL,
+    ...
+}
+
+NTCIPEssAirTemperature ::= INTEGER (-1000..1001)
+    -- The dry-bulb temperature in tenths of degrees Celsius. The 
+    -- temperature is an instantaneous reading at the height specified
+    -- by essTemperatureSensorHeight
+
+NTCIPEssTemperatureSensorHeight ::= INTEGER (-1000..1001)
+    -- The height of the temperature sensor as measured in meters 
+    -- above essReferenceHeight
+
+NtcipAtmosphericPressure ::= SEQUENCE {
+    pressure          NTCIPEssPressureSensorAtmosphericPressure,
+    measurementStdDev AtmosPressureMeasurementStdDev  OPTIONAL, 
+    ...
+}
+
+NTCIPEssPressureSensorAtmosphericPressure ::= INTEGER (0..65535)
+    -- The force per unit area exerted by the atmosphere in 1/10ths of 
+    -- millibars, a.k.a. tenths of hectoPascals
+
+NtcipWind ::= SEQUENCE {
+    avgSpeed        NTCIPWindSensorAvgSpeed         OPTIONAL,
+    avgDirection    NTCIPWindSensorAvgDirection     OPTIONAL,
+    currentSpeed    NTCIPWindSensorSpotSpeed        OPTIONAL,
+    curDirection    NTCIPWindSensorSpotDirection    OPTIONAL,   
+    gustSpeed       NTCIPWindSensorGustSpeed        OPTIONAL,
+    gustDirection   NTCIPWindSensorGustDirection    OPTIONAL,
+    ...
+}
+
+NTCIPWindSensorAvgSpeed ::= INTEGER (0..65535)
+    -- A two minute average of the wind speed in tenths of
+    -- meters per second as measured by the wind sensor
+
+NTCIPWindSensorAvgDirection ::= INTEGER (0..361)
+    -- A two minute mode (average) of the direction from which the wind is
+    -- blowing measured clockwise in degrees from true north as measured 
+    -- by the wind sensor
+
+NTCIPWindSensorSpotSpeed ::= INTEGER (0..65535)
+    -- Definition>The wind speed in tenths of meters per second measured by
+    -- the wind sensor. For mobile platforms, the wind speed shall be 
+    -- corrected for vehicle movement
+
+NTCIPWindSensorSpotDirection ::= INTEGER (0..361)
+    -- The direction from which the wind is blowing measured in 
+    -- degrees clockwise from true North as measured by the wind sensor. 
+    -- For mobile platforms, the wind direction shall be corrected for
+    -- vehicle movement
+
+NTCIPWindSensorGustSpeed ::= INTEGER (0..65535)
+    -- The maximum wind gust recorded by the wind sensor during 
+    -- the 10 minutes preceding the observation measured in tenths of
+    -- meters per second
+
+NTCIPWindSensorGustDirection ::= INTEGER (0..361)
+    -- The direction of the maximum wind gust recorded during the 10
+    -- minutes preceding the observation measured in degrees clockwise
+    -- from true North by the wind sensor.
+
+NtcipRelativeHumidity ::= SEQUENCE {
+    relHumidity     NTCIPHumiditySensorRelativeHumidity, 
+    source          DataSourceInfo                  OPTIONAL,
+    ...
+}
+
+NTCIPHumiditySensorRelativeHumidity ::= INTEGER (0..101)
+    -- The relative humidity in percent
+
+NtcipDewPoint ::= SEQUENCE {
+    dewTemp           NTCIPEssDewpointTemp, 
+    source            DataSourceInfo                  OPTIONAL,
+    measurementStdDev DewPointTempMeasurementStdDev   OPTIONAL, 
+    ...
+}
+
+NTCIPEssDewpointTemp ::= INTEGER (-1000..1001)
+    -- The dewpoint temperature in tenths of degrees Celsius. The
+    -- temperature is an instantaneous reading by the temperature
+    -- sensor specified in the first row specified of the
+    -- essTemperatureSensorTable
+
+NtcipPavement ::= SEQUENCE {
+    surfaceTemp          NTCIPEssSurfaceTemperature             OPTIONAL,   
+    tempStdDev           SurfaceTempMeasurementStdDev           OPTIONAL,
+    condition            NTCIPPavementSensorSurfaceCondition    OPTIONAL,   
+    moistureDepth        NTCIPEssSurfaceIceOrWaterDepth         OPTIONAL,
+    roadRoughness        RoadRoughness                     		OPTIONAL,
+    ...
+}
+
+NTCIPEssSurfaceTemperature ::= INTEGER (-1000..1001)
+    -- The current pavement surface temperature in tenths of degrees Celsius
+
+NTCIPPavementSensorSurfaceCondition ::= ENUMERATED {
+    -- A value indicating the pavement surface status
+    other (1),
+    error (2),
+    dry (3),
+    moist (4),
+    chemicallyMoist(5),
+    wet (6),
+    chemicallyWet (7),
+    standingWater (8),
+    frost (9),
+    slush (10),
+    snow (11),
+    ice (12),
+    noReport (13),
+    ...
+}
+
+NTCIPEssSurfaceIceOrWaterDepth ::= INTEGER (0..65535)
+    -- The current thickness of ice or depth of water on the surface of the
+    -- roadway measured in 1/10th of millimeters
+
+NtcipVisibility::= SEQUENCE {
+    visibility      NTCIPEssVisibility,
+    ...
+}
+
+NTCIPEssVisibility ::= INTEGER (0..1000001)
+    -- Surface visibility measured in one tenth of a meter
+
+
+NtcipVisibilitySituation::= SEQUENCE {
+    situation       NTCIPEssVisibilitySituation,
+    ...
+}
+
+NTCIPEssVisibilitySituation ::= ENUMERATED {
+    -- Describes the travel environment in terms of visibility. If one
+    -- exists, the corresponding BUFR value is indicated for staffed
+    -- (BUFRs) and automated (BUFRa) stations. The indicated value can
+    -- be found in the BUFR Table referenced in NTCIP 1204 v04.23
+    other (1),
+    unknown (2),
+    clear (3),
+    fogNotPatchy (4),
+    patchyFog (5),
+    blowingSnow (6),
+    smoke (7),
+    seaSpray (8),
+    vehicleSpray (9),
+    blowingDustOrSand (10),
+    sunGlare (11),
+    swarmsOfInsects (12),
+    ...
+}
+
+NtcipCloudSituation::= SEQUENCE {
+    situation       NTCIPEssCloudSituationV4,
+    ...
+}
+
+NTCIPEssCloudSituationV4 ::= INTEGER (0..8)
+    -- Describes the amount of cloud cover in the sky, measured in oktas,
+    -- as defined in WMO code table 2700
+
+NtcipPrecipitation::= SEQUENCE {
+    precipitation       NTCIPPrecipitationSensorPrecipSituation,
+    ... 
+}
+
+NTCIPPrecipitationSensorPrecipSituation ::= ENUMERATED {
+    -- Describes the weather situation in terms of precipitation. For
+    -- automated stations, describes the intensity and precipitation type
+    -- as specified in the first row of the precipitationSensorTable
+    other (1),
+    unknown (2),
+    noPrecipitation (3),
+    unidentifiedSlight (4),
+    unidentifiedModerate (5),
+    unidentifiedHeavy (6),
+    snowSlight (7),
+    snowModerate (8),
+    snowHeavy (9),
+    rainSlight (10),
+    rainModerate (11),
+    rainHeavy (12),
+    frozenPrecipitationSlight (13),
+    frozenPrecipitationModerate (14),
+    frozenPrecipitationHeavy (15),
+    ...
+}
+
+NtcipSolarRadiation ::= SEQUENCE {
+    solarRadiation      NTCIPEssTotalRadiationV4,
+    measurementPeriod   NTCIPEssTotalRadiationPeriod,
+    ...
+}
+
+NTCIPEssTotalRadiationV4 ::= INTEGER (-2048..2049)
+    -- The average total radiation hitting the earth's surface in watts per
+    -- square meter during the radiation period
+
+NTCIPEssTotalRadiationPeriod ::= INTEGER (0..86400)
+    -- The rolling period, in seconds, that corresponds to the length of
+    -- time the essTotalRadiation is averaged
+
+TemperatureMeasurementStdDev ::= INTEGER (1..16)
+    -- standard deviation in degrees
+
+AtmosPressureMeasurementStdDev ::= INTEGER (1..16) 
+    --standard deviation in tenths of hPa 
+
+DewPointTempMeasurementStdDev ::= INTEGER (1..16) 
+    --standard deviation in degrees
+
+SurfaceTempMeasurementStdDev ::= INTEGER (1..16) 
+    --standard deviation in degrees
+
+DataSourceInfo ::= ENUMERATED { measured, derived, ... }
+    -- Indicates source of the data
+
+END

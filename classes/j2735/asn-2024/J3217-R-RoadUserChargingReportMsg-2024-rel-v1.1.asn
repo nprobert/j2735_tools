@@ -1,0 +1,201 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J3217/R 
+-- Latest document release for this module is Jan 2024
+-- Filename: J3217-R-RoadUserChargingReportMsg-2024-rel-v1.1.asn 
+--
+
+RoadUserChargingReportMessage 
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566) 
+v2x-communications (1) technical-committees (1) tolling-applications (9) technical-reports (1) 
+j3217 (3217) slash-r (28) asn1-module (1) roadUserChargingReportMessage (4) 
+version-1 (1) version-minor-1 (1)}
+
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS 
+    VehicleTypes 
+        FROM TollAdvertisementMessage {joint-iso-itu-t (2) country (16) us (840)
+        organization (1) sae (114566) v2x-communications (1) technical-committees (1)
+        tolling-applications (9) technical-reports (1) j3217 (3217) asn1-module (1)
+        tollAdvertisementMessage (0) version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    VehicleId 
+        FROM TollUsageMessage {joint-iso-itu-t (2) country (16) us (840)
+        organization (1) sae (114566) v2x-communications (1) technical-committees (1)
+        tolling-applications (9) technical-reports (1) j3217 (3217) asn1-module (1)
+        tollUsageMessage (1) version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    DistanceUnits 
+        FROM TravelerInformation {joint-iso-itu-t (2) country (16) us (840) 
+        organization (1) sae (114566) v2x-communications (1) technical-committees (1) 
+        v2x-core (5) technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) 
+        travelerInformation (20) version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    DescriptiveName,
+    DDateTime
+        FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1)
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5)
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) common (38)
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    PaymentFee,
+    VehicleDescription
+        FROM EfcDataDictionary {iso(1) standard(0) 17573 dd(3) 
+        version1(1)} WITH SUCCESSORS;
+
+RoadUserChargingReportMessage ::= SEQUENCE {    
+    usageReport             UsageReport,  
+    serviceProviderData     OCTET STRING (SIZE(1024))   OPTIONAL,
+    ...
+}
+
+UsageReport ::= CHOICE {
+    feeReport               FeeReport,
+    -- Fee report is not itemized and includes a user/vehicle identifier
+    itemizedPaymentReport   ItemizedPaymentReport,
+    -- Itemized report does not include a user/vehicle identifier
+    ...
+}
+
+-- This form of the payment report includes information identifiable to
+-- a specific user (as opposed to the itemized report which does not.)
+FeeReport ::= SEQUENCE {
+    userData    UserData,
+    fees        UserFeeInfo,
+    ...
+}
+
+UserData ::= SEQUENCE {
+    timeStamp               DDateTime,
+    svcProvID               OBJECT IDENTIFIER, -- Service provider ID
+    vehicleID               VehicleId,         -- From J3217 TUM
+    vehicleType             VehicleTypes,      -- From J3217 TAM
+    vehicleDescription      VehicleDescription  OPTIONAL, -- From ISO 17573
+    ...
+}
+
+UserFeeInfo ::= SEQUENCE {
+    fee             PaymentFee,     -- From ISO 17573
+    -- Fee the OBE intends to pay.
+    -- Corresponds to the fees incurred according to the RUC Config received
+    -- from the RUC service provider
+    timePeriod      TimePeriod,
+    ...
+}
+
+-- This form of the payment report does NOT include information identifiable
+-- to a specific user. Also see FeeReport.
+ItemizedPaymentReport ::= SEQUENCE {
+    timeStamp       DDateTime,
+    timePeriod      TimePeriod,
+    -- Time period over which charges accrue, and are then due for payment
+    svcProvID       OBJECT IDENTIFIER, -- Service provider ID
+    chargerData     SEQUENCE (SIZE(1..999, ...)) OF ItemizedChargerData,
+    ...
+}
+
+ItemizedChargerData ::= SEQUENCE {
+    chargerID           OBJECT IDENTIFIER,
+    -- ID of the road charging entity, corresponds with chargerID provided in config
+    chargingDescription DescriptiveName     OPTIONAL, -- From J2735 Common
+    configID            INTEGER (0..64,...) OPTIONAL,
+    tripInfo            TripInfo            OPTIONAL,
+    totalPaidToCharger  PaymentFee,                   -- From ISO 17573
+    ...
+}
+
+-- Contains info pertaining to the distance traveled and duration of time it took
+TripInfo ::= SEQUENCE {
+    distanceTraveled    INTEGER (1..65535,...)  OPTIONAL, -- In DistanceUnits
+    distanceUnits       DistanceUnits           OPTIONAL,
+    timeTraveled        INTEGER (1..600000,...) OPTIONAL, 
+    -- Time duration in minutes. Up to 600,000 minutes, 10,000 hours
+    -- Rounded down to nearest minute
+    ...
+}
+(WITH COMPONENTS {...,distanceTraveled, distanceUnits PRESENT} |
+ WITH COMPONENTS {...,timeTraveled PRESENT})
+
+
+-- Time period over which charges accrue, and are then due for payment
+-- Typically 30-days
+TimePeriod ::= SEQUENCE {
+    startTime       DDateTime,
+    endTime         DDateTime,
+    ...
+}
+
+END

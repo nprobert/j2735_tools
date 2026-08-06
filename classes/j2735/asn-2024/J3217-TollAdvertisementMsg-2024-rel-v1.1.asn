@@ -1,0 +1,335 @@
+--
+-- Terms and Conditions and User License Agreement - Download and Use of ASN File
+-- 
+-- Copyright: Each ASN File contained herein ("File") is copyrighted and all
+-- rights, title, and interest in and to each File are owned by SAE. The 
+-- license contained herein applies to each File and each reference in this license
+-- to "the File" or "this File" shall be construed to include each and any ASN File
+-- contained herein. No rights therein are granted except as set forth in this
+-- License. Any copying, transmission, modification or reproduction of the File or
+-- the copyrighted material within it, in part or in whole, except as herein
+-- permitted is cause for revocation of this License.
+-- 
+-- License: SAE International ("SAE") hereby grants to you, as an individual or as
+-- a single corporate entity, a limited nonexclusive, nontransferable right to
+-- download this File in an electronic format for your individual use or use by
+-- a single corporate entity on one computer. One hard copy of the File can also
+-- be printed for individual use or use by a single corporate entity. SAE also
+-- hereby grants to you the nonexclusive, nontransferable right to use this File
+-- and create derivative works using this File for your own or your own corporate
+-- entity's research purposes and in the design, creation, manufacture, distribution,
+-- and use of your own products. For purposes of clarification, derivative works
+-- permitted under this license include derivative works or source code that do not
+-- include or incorporate this File. The derivative work may use the File to create
+-- source code and corresponding software programs.  Notwithstanding the foregoing,
+-- you agree that you must obtain a license from SAE to create any derivative works
+-- which incorporate this File or its contents.
+--
+-- SAE also hereby grants to you the nonexclusive, nontransferable right to copy,
+-- reproduce, distribute to others the derivative works from the use of the content
+-- of this File or portions thereof in or as part of your company's products.
+-- You must only license, and not otherwise sell or transfer, the products, software,
+-- and software documentation that incorporates content from this File, and you must
+-- prohibit any licensees or others from transferring, copying, or extracting the
+-- contents of this File thereof for use in their own or others' software or products.
+--
+-- Other than as expressly permitted herein, this File may not be copied in whole in
+-- any form for distribution to other users or other computers, including without
+-- limitation to other individuals or users within your own corporate entity or
+-- outside your corporate entity.  This license prohibits the end user from posting
+-- or distributing content via any public forum or as open access content.  If other
+-- individuals in or outside your corporate entity or different cooperate entities,
+-- whether related or not to your corporate entity, wish to download or copy this
+-- File, they must purchase a separate individual license to do so. 
+-- 
+-- This File is licensed "AS IS" to you and you do hereby hold SAE harmless from your
+-- use of the File or the creative or use of derivative works thereof, and you agree
+-- to indemnify SAE from any and all claims or damages caused by your use,
+-- reproduction, distribution to others, or application of this File or any
+-- derivative works therefrom.  SAE may amend the terms of and conditions of
+-- this License or cancel this License at any time in its sole discretion and
+-- for any reason by reasonable notice, including without limitation by posting
+-- revised terms on its website.  
+--
+-- General: Files that have been successfully downloaded cannot be returned for
+-- refund or credit. This Agreement is the complete and exclusive statement of the
+-- agreement between you and SAE and supersedes any and all prior agreements or
+-- understandings, either written or oral, concerning the subject of this Agreement.
+-- Any modifications must be in writing and signed by the parties.
+-- 
+-- Notice to Resellers: Authorized resellers of SAE Files may download this File on
+-- behalf of their customers and forward it directly, unopened, to their customers
+-- provided their customers agree to abide by the terms of this License. Resellers
+-- may not otherwise copy, transmit, modify or reproduce this File.
+-- 
+-- This license will remain in effect for the life of the standards associated with
+-- the File unless otherwise amended or cancelled by SAE in its sole discretion.
+-- In the event that the associated standard is cancelled or recalled due to interest
+-- of public safety, the aforementioned License will be rescinded as well. This 
+-- License shall terminate upon violation of any of its terms.
+--
+-- (C)2024 SAE International.  All rights reserved.  SAE International retains the
+-- right to entertain or negotiate requests for customized distribution agreements
+-- for multi-user or corporate use and / or distribution. Requests should be submitted
+-- to customerservice@sae.org.
+--
+
+--
+-- Use of this module defined in SAE J3217
+-- Latest document release for this module is Jun 2022
+-- Filename: J3217-TollAdvertisementMsg-2024-rel-v1.1.asn 
+--
+
+TollAdvertisementMessage
+{joint-iso-itu-t (2) country (16) us (840) organization (1) sae (114566)
+v2x-communications (1) technical-committees (1) tolling-applications (9)
+technical-reports (1) j3217 (3217) asn1-module (1) tollAdvertisementMessage (0)
+version-1 (1) version-minor-1 (1)}
+       
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+IMPORTS 
+    GenericLane 
+        FROM MapData {joint-iso-itu-t (2) country (16) us (840) organization (1)
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5)
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) mapData (8)
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    DescriptiveName,
+    LaneID,
+    DDateTime,
+    MsgCount,
+    RegulatorySpeedLimit,
+    LaneWidth,
+    Position3D  
+        FROM Common {joint-iso-itu-t (2) country (16) us (840) organization (1)
+        sae (114566) v2x-communications (1) technical-committees (1) v2x-core (5)
+        technical-reports (1) j2735 (2735) part-0 (0) asn1-module (1) common (38)
+        version-1 (1) version-minor-1 (1)} WITH SUCCESSORS
+    EngineCharacteristics,
+    PaymentFee
+        FROM EfcDataDictionary {iso(1) standard(0) 17573 dd(3) 
+        version1(1)} WITH SUCCESSORS;
+
+TollAdvertisementMessage ::= SEQUENCE {                                 
+-- Toll Advertisement Message (TAM) is message broadcast by RSEs about the variable
+-- Toll Road Topology with accompanying Toll Rates
+    tollChargesTable    TollChargesTable,
+    tollAdvInfo         TollAdvertisementInfo           OPTIONAL,
+    ...  
+}
+
+TollAdvertisementInfo ::= SEQUENCE {
+    tamSequenceNum      MsgCount,                   
+    -- Increments only if TAM contents have changed (or any TAMs have changed)
+    totalTams           INTEGER (1..10, ...),   
+    -- If multiple TAMs are used, they can be linked together (see tamNum) 
+    tamNum              INTEGER (1..10, ...),
+    -- Identifies each TAM in a set. Up to ten TAMs can be linked together
+    tollChargerInfo     TollChargerInfo,        
+    -- Includes TollCharger and TollPoint identifiers
+    timestamp           DDateTime,              
+    -- Time of Generation (prior to signing)
+    tumInstructions     TumInstructions     OPTIONAL,         
+    -- Num of loc/timestamp pairs to send in TUM
+    tollPointMap        TollPointMap,
+    tumPublicKey        OCTET STRING (SIZE(32)),  
+    -- Replicated from the applicable portion of IEEE 1609.2 EccP256CurvePoint
+    ackPolicy           AckPolicy,
+    lastTollPtDataReq   BOOLEAN OPTIONAL,
+    ...
+}
+
+TumInstructions ::= SEQUENCE {
+    maxNumOfLocTimeStamps   INTEGER (1..5, ...), 
+    locTimeStampRate        INTEGER (1..10,...), -- In Hz (1=once per sec, etc._)
+    ...
+}
+
+AckPolicy ::= SEQUENCE {
+    timeout         INTEGER (100..10000), -- in milliseconds
+    numOfRetries    INTEGER (1..5, ...),  -- Give up sending TUM after numOfRetries tries
+    ...
+}
+
+TollChargesTable ::= SEQUENCE {
+    tollTypeCharge      CHOICE {
+        pointCharges            ChargesTable,                               
+        -- All lanes are the same fee per vehicle type
+        perLaneCharges          SEQUENCE (SIZE(1..64, ...)) OF LaneChargesTable, 
+        -- Per lane, per vehicle charges allowed (still a point charge)
+        closedNetworkCharges    SEQUENCE (SIZE(1..64, ...)) OF ClosedNetworkChargesTable, 
+        -- Closed network, no per lane charges allowed
+        timeBasedCharges    TimeChargesTable,
+        ...
+    },
+    ...
+}
+
+LaneChargesTable ::= SEQUENCE {
+    laneId          LaneID,
+    chargesTable    ChargesTable,
+    ...
+}
+
+ClosedNetworkChargesTable ::= CHOICE {
+    entryChargesTable   EntryChargesTable,
+    exitChargesTable    ExitChargesTable,
+    ...
+}
+
+EntryChargesTable ::= SEQUENCE {
+    exitInfo        ExitInfo, 
+    --Exit points provided when entering the closed network
+    chargesTable    ChargesTable,
+    ...
+}
+
+ExitChargesTable ::= SEQUENCE {
+    entryInfo       TollPointID     OPTIONAL, 
+    --Entry points prior to this toll point
+    chargesTable    ChargesTable,
+    ...
+}
+
+ExitInfo ::= SEQUENCE {
+    exitNumber      INTEGER (1..999, ...),
+    exitLetter      INTEGER (65..90)    OPTIONAL, 
+    -- Use ASCII character code for a single letter in the range of A to Z
+    tollPointID     TollPointID         OPTIONAL,
+    ...
+}
+
+TimeChargesTable ::= SEQUENCE {
+    maxTime         INTEGER (1..1440), 
+    -- In minutes, up to 24 hours, used to compute max fee
+    chargesTable    ChargesTable,      
+    -- Fee indicates charge per minute
+    ...
+}
+
+ChargesTable ::= CHOICE {
+    vehTypeBased        VehTypeChargesTable,
+    numAxlesBased       AxlesChargesTable,
+    weightBased         WeightChargesTable,
+    ...
+}
+
+VehTypeChargesTable ::= SEQUENCE (SIZE(1..13, ...)) OF VehTypeCharges
+
+VehTypeCharges ::= SEQUENCE {
+    vehType         VehicleTypes,
+    charges         PaymentFee,
+    specialCharges  SpecialCharges OPTIONAL,
+    ...
+}
+
+VehicleTypes ::= ENUMERATED {
+    motorcycles                 (1),
+    passengerCars               (2),
+    fourTireSingleUnit          (3),
+    buses                       (4),
+    twoAxleSixTireSingleUnit    (5),
+    threeAxleSingleUnit         (6),
+    fourOrMoreAxleSingleUnit    (7),
+    fourOrLessAxleSingleTrailer (8),
+    fiveAxleTractorSemitrailer  (9),
+    sixOrMoreAxleSingleTrailer  (10),
+    fiveOrLessAxleMultiTrailer  (11),
+    sixAxleMultiTrailer         (12),
+    sevenOrMoreAxleMultiTrailer (13),
+    ...
+} -- 13 FHWA veh classes
+
+SpecialCharges ::= SEQUENCE {
+    hov2Charge              PaymentFee      OPTIONAL,
+    hov3Charge              PaymentFee      OPTIONAL,
+    hov4Charge              PaymentFee      OPTIONAL,
+    hov5PlusCharge          PaymentFee      OPTIONAL,
+    cleanAirCharge          PaymentFee      OPTIONAL,
+    operatorDefined         OperatorDefined OPTIONAL,
+    engineCharacteristics   EngineCharacteristics OPTIONAL, -- Imported from ISO 17573                                             
+    ...
+}
+
+-- Up to 16 toll-charger defiend specialCharges categories
+OperatorDefined ::= SEQUENCE {
+    opDefCharge1    PaymentFee OPTIONAL,
+    opDefCharge2    PaymentFee OPTIONAL,
+    opDefCharge3    PaymentFee OPTIONAL,
+    opDefCharge4    PaymentFee OPTIONAL,
+    opDefCharge5    PaymentFee OPTIONAL,
+    opDefCharge6    PaymentFee OPTIONAL,
+    opDefCharge7    PaymentFee OPTIONAL,
+    opDefCharge8    PaymentFee OPTIONAL,
+    opDefCharge9    PaymentFee OPTIONAL,
+    opDefCharge10   PaymentFee OPTIONAL,
+    opDefCharge11   PaymentFee OPTIONAL,
+    opDefCharge12   PaymentFee OPTIONAL,
+    opDefCharge13   PaymentFee OPTIONAL,
+    opDefCharge14   PaymentFee OPTIONAL,
+    opDefCharge15   PaymentFee OPTIONAL,
+    opDefCharge16   PaymentFee OPTIONAL,
+    ...
+}
+
+-- This table can support from 1 to 10 weight ranges
+-- Weight ranges are not fixed, they can vary from message to message
+WeightChargesTable ::= SEQUENCE (SIZE(1..10), ...) OF WeightCharges
+
+WeightCharges ::= CHOICE {
+    totalWeightCharges      TotalWeightCharges,
+    perAxleWeightCharges    PerAxleWeightCharges,
+    ...
+}
+
+TotalWeightCharges ::= SEQUENCE {
+    weightLimit         INTEGER (0..16777215), -- In units indicated
+    weightLimitUnits    ENUMERATED {pounds, kilograms, ...},
+    weightCharge        PaymentFee,
+    ...
+}
+
+PerAxleWeightCharges ::= SEQUENCE {
+    totalWeightLimit        INTEGER (0..16777215), -- In units indicated
+    maxLadenWeightOnAxle    INTEGER (0..65535),
+    weightLimitUnits        ENUMERATED {pounds, kilograms, ...},
+    axleWeightCharge        PaymentFee,
+    ...
+}
+
+-- This table can support from 1 to 10 axle limit ranges
+-- Axle limit ranges are not fixed, they can vary from message to message
+AxlesChargesTable ::= SEQUENCE (SIZE(2..10, ...)) OF AxlesCharges
+
+AxlesCharges ::= SEQUENCE {
+    axlesLimit      INTEGER (2..10, ...),
+    axlesCharge     PaymentFee,
+    ...
+}
+
+TollPointMap ::= SEQUENCE {
+    revisionNum         INTEGER (1..10, ...),                                                               
+    referencePoint      Position3D,
+    speedLimit          RegulatorySpeedLimit,   -- Regulatory speed limit
+    laneWidth           LaneWidth,  -- 
+    approachLanesMap    SEQUENCE (SIZE(1..64), ...) OF GenericLane 
+        (WITH COMPONENTS 
+            {..., name, ingressApproach, egressApproach, maneuvers, overlays ABSENT }),
+    tollZoneLanesMap    SEQUENCE (SIZE(1..64), ...) OF GenericLane
+        (WITH COMPONENTS 
+            {..., name, ingressApproach, egressApproach, maneuvers, overlays ABSENT }),
+    ...
+}
+
+TollChargerInfo ::= SEQUENCE {
+    tollChargerId       OBJECT IDENTIFIER,     -- OID of the entity charging the tolls
+    tollPointId         TollPointID,
+    descriptiveName     DescriptiveName OPTIONAL,
+    ...
+}
+
+TollPointID ::= INTEGER (1..2048)
+
+END
+
