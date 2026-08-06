@@ -10,7 +10,7 @@
 
 Ieee1609Dot2BaseTypes {iso(1) identified-organization(3) ieee(111)
   standards-association-numbered-series-standards(2) wave-stds(1609) dot2(2)
-  base(1) base-types(2) major-version-2(2) minor-version-4(4)}
+  base(1) base-types(2) major-version-2(2) minor-version-5(5)}
 
 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
@@ -210,13 +210,13 @@ HashedId48 ::= OCTET STRING(SIZE(48))
 
 /**
  * @brief This type gives the number of (TAI) seconds since 00:00:00 UTC, 1
- * January, 2004.
+ * January 2004.
  */
 Time32 ::= Uint32
 
 /**
  * @brief This data structure is a 64-bit integer giving an estimate of the 
- * number of (TAI) microseconds since 00:00:00 UTC, 1 January, 2004.
+ * number of (TAI) microseconds since 00:00:00 UTC, 1 January 2004.
  */
 Time64 ::= Uint64
 
@@ -474,7 +474,7 @@ CountryOnly ::= UnCountryId
  * Implementation Conformance Statement (PICS) provided in Annex A allows 
  * an implementation to state which UnCountryId values it recognizes and 
  * which region values are recognized within that country.
- * If a verifying implementation is required to check that an relevant 
+ * If a verifying implementation is required to check that relevant 
  * geographic information in a signed SPDU is consistent with a certificate 
  * containing one or more instances of this type, then the SDS is permitted 
  * to indicate that the signed SPDU is valid even if some values of country 
@@ -520,7 +520,7 @@ CountryAndRegions ::= SEQUENCE {
  * (PICS) provided in Annex A allows an implementation to state which 
  * UnCountryId values it recognizes and which region values are recognized 
  * within that country.
- * If a verifying implementation is required to check that an relevant 
+ * If a verifying implementation is required to check that relevant 
  * geographic information in a signed SPDU is consistent with a certificate 
  * containing one or more instances of this type, then the SDS is permitted 
  * to indicate that the signed SPDU is valid even if some values of country 
@@ -553,9 +553,9 @@ CountryAndSubregions ::= SEQUENCE {
  * to as the "enclosing country". If this structure is used in a 
  * CountryAndSubregions structure, the enclosing country is the one indicated 
  * by the country field in the CountryAndSubregions structure. If other uses 
- * are defined for this structure in future, it is expected that that 
- * definition will include a specification of how the enclosing country can 
- * be determined.
+ * are defined for this structure in the future, it is anticipated (in the
+ * sense of 4.4) that that definition will include a specification of how the
+ * enclosing country can be determined.
  * If the enclosing country is the United States of America:
  * - The region field identifies the state or statistically equivalent 
  * entity using the integer version of the 2010 FIPS codes as provided by the
@@ -586,7 +586,7 @@ CountryAndSubregions ::= SEQUENCE {
  * geographic information. Informally, if the recognized values in the 
  * certificate allow the SDS to determine that the SPDU is valid, then it 
  * can make that determination even if there are also unrecognized values 
- * in the certificate. This field is therefore not not a "critical 
+ * in the certificate. This field is therefore not a "critical 
  * information field" as defined in 5.2.6, because unrecognized values are 
  * permitted so long as the validity of the SPDU can be established with the 
  * recognized values. However, as discussed in 5.2.6, the presence of an 
@@ -611,8 +611,7 @@ RegionAndSubregions ::= SEQUENCE {
 SequenceOfRegionAndSubregions ::= SEQUENCE OF RegionAndSubregions
 
 /**
- * @brief This structure contains an estimate of 3D location. The details of
- * the structure are given in the definitions of the individual fields below.
+ * @brief This structure contains an estimate of 3D location. 
  *
  * @note The units used in this data structure are consistent with the 
  * location data structures used in 	SAE J2735 [B26], though the encoding is
@@ -732,7 +731,7 @@ Signature ::= CHOICE {
  * @brief This structure represents an ECDSA signature. The signature is
  * generated as specified in 5.3.1.
  *
- * If the signature process followed the specification of FIPS 186-4
+ * If the signature process followed the specification of FIPS 186-5
  * and output the integer r, r is represented as an EccP256CurvePoint
  * indicating the selection x-only.
  *
@@ -749,10 +748,10 @@ Signature ::= CHOICE {
  * @note When the signature is of form x-only, the x-value in rSig is
  * an integer mod n, the order of the group; when the signature is of form
  * compressed-y-\*, the x-value in rSig is an integer mod p, the underlying
- * prime defining the finite field. In principle this means that to convert a
+ * prime defining the finite field. In principle, this means that to convert a
  * signature from form compressed-y-\* to form x-only, the converter checks 
  * the x-value to see if it lies between n and p and reduces it mod n if so. 
- * In practice this check is unnecessary: Haase's Theorem states that 
+ * In practice, this check is unnecessary: Haase's Theorem states that 
  * difference between n and p is always less than 2*square-root(p), and so the 
  * chance that an integer lies between n and p, for a 256-bit curve, is 
  * bounded above by approximately square-root(p)/p or 2^(-128). For the 
@@ -776,7 +775,7 @@ EcdsaP256Signature ::= SEQUENCE {
  * @brief This structure represents an ECDSA signature. The signature is
  * generated as specified in 5.3.1.
  *
- * If the signature process followed the specification of FIPS 186-4
+ * If the signature process followed the specification of FIPS 186-5
  * and output the integer r, r is represented as an EccP384CurvePoint
  * indicating the selection x-only.
  *
@@ -793,10 +792,10 @@ EcdsaP256Signature ::= SEQUENCE {
  * @note When the signature is of form x-only, the x-value in rSig is
  * an integer mod n, the order of the group; when the signature is of form
  * compressed-y-\*, the x-value in rSig is an integer mod p, the underlying
- * prime defining the finite field. In principle this means that to convert a 
+ * prime defining the finite field. In principle, this means that to convert a 
  * signature from form compressed-y-* to form x-only, the converter checks the
  * x-value to see if it lies between n and p and reduces it mod n if so. In
- * practice this check is unnecessary: Haase's Theorem states that difference
+ * practice, this check is unnecessary: Haase's Theorem states that difference
  * between n and p is always less than 2*square-root(p), and so the chance
  * that an integer lies between n and p, for a 384-bit curve, is bounded
  * above by approximately square-root(p)/p or 2^(-192). For the 384-bit curve
@@ -824,7 +823,7 @@ EcsigP256Signature ::= SEQUENCE  {
 /**
  * @brief This structure specifies a point on an elliptic curve in Weierstrass
  * form defined over a 256-bit prime number. The curves supported in this
- * standard are NIST p256 as defined in FIPS 186-4, Brainpool p256r1 as
+ * standard are NIST p256 as defined in FIPS 186-5, Brainpool p256r1 as
  * defined in RFC 5639, and the SM2 curve as defined in GB/T 32918.5-2017.
  * The fields in this structure are OCTET STRINGS produced with the elliptic
  * curve point encoding and decoding methods defined in subclause 5.5.6 of
@@ -1085,7 +1084,7 @@ SymmetricEncryptionKey ::= CHOICE {
  *
  * @note Consistency with signed SPDU: As noted in 5.1.1,
  * consistency between the SSP and the signed SPDU is defined by rules
- * specific to the given PSID and is out of scope for this standard.
+ * specific to the given PSID and is outside the scope of this standard.
  *
  * @note Consistency with issuing certificate: If a certificate has an
  * appPermissions entry A for which the ssp field is omitted, A is consistent
@@ -1170,13 +1169,20 @@ ServiceSpecificPermissions ::= CHOICE {
  * the sspValue in A is set equal to the bit in that position in the
  * sspValue in P.
  *
- * @note A BitmapSsp B is consistent with a BitmapSspRange R if for every
- * bit set to 1 in the sspBitmask in R, the bit in the identical position in
- * B is set equal to the bit in that position in the sspValue in R. For each
- * bit set to 0 in the sspBitmask in R, the corresponding bit in the
- * identical position in B may be freely set to 0 or 1, i.e., if a bit is
- * set to 0 in the sspBitmask in R, the value of corresponding bit in the
- * identical position in B has no bearing on whether B and R are consistent.
+ * @note To restate the final sub-bullet point immediately above: A BitmapSsp B
+ * is consistent with a BitmapSspRange R if for every bit set to 1 in the
+ * sspBitmask in R, the bit in the identical position in B is set equal to the
+ * bit in that position in the sspValue in R. For each bit set to 0 in the
+ * sspBitmask in R, the corresponding bit in the identical position in B may be
+ * freely set to 0 or 1, i.e., if a bit is set to 0 in the sspBitmask in R, the
+ * value of corresponding bit in the identical position in B has no bearing on
+ * whether B and R are consistent.
+ *
+ * @note Where a BitmapSsp in an authorization certificate is being compared
+ * with a BitmapSspRange in an issuing certificate, the rules given above imply
+ * that the BitmapSsp: (a) cannot be longer than BitmapSspRange in the issuing
+ * cert; (b) Can be shorter than the BitmapSspRange but must be long enough to
+ * reach the last "1" bit in the sspBitmask.
  */
 BitmapSsp ::= OCTET STRING (SIZE(0..31))
 
@@ -1302,12 +1308,12 @@ SequenceOfOctetString ::=
  * for future use, and bit 1 and bit 0 denote the confidence.
  *
  * The specification of these assurance levels as well as the
- * encoding of the confidence levels is outside the scope of the present
+ * encoding of the confidence levels is outside the scope of this
  * standard. It can be assumed that a higher assurance value indicates that
  * the holder is more trusted than the holder of a certificate with lower
  * assurance value and the same confidence value.
  *
- * @note This field was originally specified in ETSI TS 103 097 and
+ * @note This field was originally specified in ETSI TS 103 097, and
  * future uses of this field are anticipated to be consistent with future
  * versions of that standard.
  */

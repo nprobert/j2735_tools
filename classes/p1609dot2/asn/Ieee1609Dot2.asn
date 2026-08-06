@@ -10,7 +10,7 @@
 
 Ieee1609Dot2 {iso(1) identified-organization(3) ieee(111)
   standards-association-numbered-series-standards(2) wave-stds(1609)
-  dot2(2) base(1) schema(1) major-version-2(2) minor-version-6(6)}
+  dot2(2) base(1) schema(1) major-version-2(2) minor-version-7(7)}
 
 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
@@ -178,11 +178,11 @@ SignedData ::= SEQUENCE {
  * ToBeSignedData, concatenated with the hash of the omitted payload. The hash
  * of the omitted payload is calculated with the same hash algorithm that is 
  * used to calculate the hash of the data input for signing or verification. 
- * The data input to the hash operation is simply the COER enocding of the 
+ * The data input to the hash operation is simply the COER encoding of the 
  * ToBeSignedData, concatenated with the hash of the omitted payload: there is
  * no additional wrapping or length indication. As noted in 5.2.4.3.4, the 
  * means by which the signer and verifier establish the contents of the 
- * omitted payload are out of scope for this standard.
+ * omitted payload are outside the scope of this standard.
  *
  * @note Canonicalization: This data structure is subject to canonicalization 
  * for the relevant operations specified in 6.1.2. The canonicalization 
@@ -199,7 +199,7 @@ ToBeSignedData ::= SEQUENCE {
  * structure contains at least one of the optional elements, and may contain 
  * more than one. See 5.2.4.3.4 for more details.
  * The security profile in Annex C allows an implementation of this standard 
- * to state which forms of Signed,Data,Payload are supported by that 
+ * to state which forms of SignedDataPayload are supported by that 
  * implementation, and also how the signer and verifier are intended to obtain
  * the external data for hashing. The specification of an SDEE that uses 
  * external data is expected to be explicit and unambiguous about how this 
@@ -213,8 +213,9 @@ ToBeSignedData ::= SEQUENCE {
  * transported within the structure, and which the creator of the structure 
  * wishes to cryptographically bind to the signature. 
  *
- * @param omitted: indicates that there is external data to be included in the
- * hash calculation for the signature.The mechanism for including the external
+ * @param omitted: indicates that there is data to be included in the hash
+ * calculation for the signature that is not included in the SPDU, either in
+ * data or by use of the extDataHash. The mechanism for including the omitted
  * data in the hash calculation is specified in 6.3.6.
  *
  * @note Canonicalization: This data structure is subject to canonicalization 
@@ -255,7 +256,7 @@ HashedData::= CHOICE {
 }
 
 /**
- * @brief This structure contains information that is used to establish
+ * @brief This structure contains the following information that is used to establish
  * validity by the criteria of 5.2.
  *
  * @param psid: indicates the application area with which the sender is
@@ -437,7 +438,8 @@ IEEE1609DOT2-HEADERINFO-CONTRIBUTED-EXTENSION ::= CLASS {
  * extension types are defined: Ieee1609ContributedHeaderInfoExtension and 
  * EtsiOriginatingHeaderInfoExtension.
  */
-Ieee1609Dot2HeaderInfoContributedExtensions IEEE1609DOT2-HEADERINFO-CONTRIBUTED-EXTENSION ::= {
+Ieee1609Dot2HeaderInfoContributedExtensions
+  IEEE1609DOT2-HEADERINFO-CONTRIBUTED-EXTENSION ::= {
   {Ieee1609ContributedHeaderInfoExtension IDENTIFIED BY 
         ieee1609HeaderInfoContributorId} |
   {EtsiOriginatingHeaderInfoExtension IDENTIFIED BY
@@ -450,7 +452,7 @@ Ieee1609Dot2HeaderInfoContributedExtensions IEEE1609DOT2-HEADERINFO-CONTRIBUTED-
  * contributing organization. In this version of this standard two values are
  * defined: 
  *   - ieee1609OriginatingExtensionId indicating extensions originating with 
- * IEEE 1609.
+ * IEEE Std 1609.
  *   - etsiOriginatingExtensionId indicating extensions originating with 
  * ETSI TC ITS.
  */
@@ -477,7 +479,9 @@ etsiHeaderInfoContributorId     HeaderInfoContributorId ::= 2
  * @param certificate: If the choice indicated is certificate:
  *   - The structure contains one or more Certificate structures, in order
  * such that the first certificate is the authorization certificate and each
- * subsequent certificate is the issuer of the one before it.
+ * subsequent certificate is the issuer of the one before it. The certificate
+ * chain may be of any length. It should not include the root CA certificate
+ * (as the receiving SDS is assumed to know all valid root CAs already).
  *   - The verification type is certificate and the certificate data
  * passed to the hash function as specified in 5.3.1 is the authorization
  * certificate.
@@ -521,7 +525,8 @@ Countersignature ::= Ieee1609Dot2Data (WITH COMPONENTS {...,
       tbsData (WITH COMPONENTS {..., 
         payload (WITH COMPONENTS {..., 
           data ABSENT,
-          extDataHash PRESENT
+          extDataHash PRESENT,
+          omitted ABSENT
         }),
         headerInfo(WITH COMPONENTS {..., 
           generationTime PRESENT,
@@ -582,10 +587,7 @@ EncryptedData ::= SEQUENCE {
  * selected if the EncryptedData was encrypted using the static encryption
  * key approach specified in 5.3.4. The other options are selected if the
  * EncryptedData was encrypted using the ephemeral encryption key approach
- * specified in 5.3.4. The meanings of the choices are:
- *
- * See Annex C.7 for guidance on when it may be appropriate to use
- * each of these approaches.
+ * specified in 5.3.4. The meanings of the choices are as follows:
  *
  * @param pskRecipInfo: The data was encrypted directly using a pre-shared 
  * symmetric key.
@@ -629,6 +631,9 @@ EncryptedData ::= SEQUENCE {
  * @note If the encryption algorithm is SM2, there is no equivalent of the 
  * parameter P1 and so no input to the encryption process that uses the hash 
  * of the empty string.
+ *
+ * See C.8 for guidance on when it may be appropriate to use each of these
+ * approaches.
  *
  * @note The material input to encryption is the bytes of the encryption key 
  * with no headers, encapsulation, or length indication. Contrast this to 
@@ -786,7 +791,7 @@ Aes128CcmCiphertext ::= One28BitCcmCiphertext
 --***************************************************************************--
 
 /**
- * @brief This structure is a profile of the structure CertificateBase which
+ * @brief This structure is a profile of the structure CertificateBase, which
  * specifies the valid combinations of fields to transmit implicit and
  * explicit certificates.
  *
@@ -827,7 +832,8 @@ SequenceOfCertificate ::= SEQUENCE OF Certificate
  * @param signature: is included in an ExplicitCertificate. It is the
  * signature, calculated by the signer identified in the issuer field, over
  * the hash of toBeSigned. The hash is calculated as specified in 5.3.1, where:
- *   - Data input is the encoding of toBeSigned following the COER.
+ *   - Data input is the encoding of toBeSigned, canonicalized as described
+ * next.
  *   - Signer identifier input depends on the verification type, which in
  * turn depends on the choice indicated by issuer. If the choice indicated by
  * issuer is self, the verification type is self-signed and the signer
@@ -936,21 +942,6 @@ IssuerIdentifier ::= CHOICE {
  * @brief The fields in the ToBeSignedCertificate structure have the
  * following meaning:
  *
- * For both implicit and explicit certificates, when the certificate
- * is hashed to create or recover the public key (in the case of an implicit
- * certificate) or to generate or verify the signature (in the case of an
- * explicit certificate), the hash is Hash (Data input) || Hash (
- * Signer identifier input), where:
- *   - Data input is the COER encoding of toBeSigned, canonicalized
- * as described above.
- *   - Signer identifier input depends on the verification type,
- * which in turn depends on the choice indicated by issuer. If the choice
- * indicated by issuer is self, the verification type is self-signed and the
- * signer identifier input is the empty string. If the choice indicated by
- * issuer is not self, the verification type is certificate and the signer
- * identifier input is the COER encoding of the canonicalization per 6.4.3 of
- * the certificate indicated by issuer.
- *
  * In other words, for implicit certificates, the value H (CertU) in SEC 4,
  * section 3, is for purposes of this standard taken to be H [H
  * (canonicalized ToBeSignedCertificate from the subordinate certificate) ||
@@ -975,12 +966,26 @@ IssuerIdentifier ::= CHOICE {
  * @param validityPeriod: contains the validity period of the certificate.
  *
  * @param region: if present, indicates the validity region of the
- * certificate. If it is omitted the validity region is indicated as follows:
- *   - If enclosing certificate is self-signed, i.e., the choice indicated
+ * certificate. If it is omitted the validity region is determined as follows:
+ *   - If the enclosing certificate is self-signed, i.e., the choice indicated
  * by the issuer field in the enclosing certificate structure is self, the
  * certificate is valid worldwide.
  *   - Otherwise, the certificate has the same validity region as the
  * certificate that issued it.
+ *
+ * The above algorithm is applied recursively, i.e. if region is omitted from
+ * the issuing certificate, then the issuing certificate of that certificate is
+ * inspected to determine if region is present, and so on. A certificate,
+ * therefore, has global geographic validity as defined in 5.2.6.6.3.1 if
+ * region is not present in the certificate or in any certificate in its chain.
+ * Otherwise, i.e., if region is present in the certificate or in at least one
+ * certificate in its chain, the certificate has area validity as defined in
+ * 5.2.6.6.3.1.
+ *
+ * The use of the validity region to determine geographic consistency of an
+ * SPDU is specified in 5.2.6.6.3.1. The use of the validity region to
+ * determine geographic consistency of a subordinate certificate with an
+ * issuing certificate is specified in 5.1.2.4.
  *
  * @param assuranceLevel: indicates the assurance level of the certificate
  * holder.
@@ -1025,6 +1030,9 @@ IssuerIdentifier ::= CHOICE {
  * Further material about the compact unified butterfly key response can be 
  * found in IEEE Std 1609.2.1.
  *
+ * If this field is present, at least one of the bits in the field shall be
+ * non-zero.
+ *
  * @note usesCubk is only relevant for CA certificates, and the only 
  * functionality defined associated with this field is associated with 
  * consistency checks on received certificate responses. No functionality 
@@ -1035,10 +1043,43 @@ IssuerIdentifier ::= CHOICE {
  * to application activities that the certificate holder is carrying out. 
  *
  * @param certIssueExtensions: indicates additional permissions to issue 
- * certificates containing endEntityExtensions. 
+ * certificates containing appExtensions. 
  *
  * @param certRequestExtensions: indicates additional permissions to request 
  * certificates containing endEntityExtensions.
+ *
+ * @note In IEEE Std 1609.2-2022 these were not marked optional; they are in
+ * this version of the standard; this is technically not backwards compatible
+ * but in practice there are no scenarios in which a legacy system will break
+ * (because it would have to be the case that Issue or Request was included and
+ * App wasn't, but no issue or request extension values are currently defined).
+ * 
+ * @note Issue and Request extensions are specified in this version of this
+ * standard for future use but do not currently have any values defined. The
+ * only certificate extension defined is OperatingOrganizationId and that can
+ * be issued by any CA. It can be taken as likely that future appExtensions
+ * will also be issuable by any CA, as otherwise consistency rules will differ
+ * between appExtensions, and so in practice these certIssueExtensions and
+ * certRequestExtensions fields will never be use. See Annex G for discussion
+ * of how the standard could in principle be extended to include extensions
+ * that do have a need to be validated up the chain.
+ *
+ * @note Calculating the hash of a certificate:
+ * For both implicit and explicit certificates, when the certificate
+ * is hashed to create or recover the public key (in the case of an implicit
+ * certificate) or to generate or verify the signature (in the case of an
+ * explicit certificate), the hash is Hash (Data input) || Hash (
+ * Signer identifier input), where:
+ *   - Data input is the COER encoding of toBeSigned, canonicalized
+ * as described above.
+ *   - Signer identifier input depends on the verification type,
+ * which in turn depends on the choice indicated by issuer. If the choice
+ * indicated by issuer is self, the verification type is self-signed and the
+ * signer identifier input is the empty string. If the choice indicated by
+ * issuer is not self, the verification type is certificate and the signer
+ * identifier input is the COER encoding of the canonicalization per 6.4.3 of
+ * the certificate indicated by issuer.
+ *
  *
  * @note Canonicalization: This data structure is subject to canonicalization 
  * for the relevant operations specified in 6.1.2. The canonicalization 
@@ -1117,9 +1158,9 @@ ToBeSignedCertificate ::= SEQUENCE {
   verifyKeyIndicator     VerificationKeyIndicator,
   ...,
   flags                  BIT STRING {usesCubk (0)} (SIZE (8)) OPTIONAL,
-  appExtensions          SequenceOfAppExtensions,
-  certIssueExtensions    SequenceOfCertIssueExtensions,
-  certRequestExtension   SequenceOfCertRequestExtensions
+  appExtensions          SequenceOfAppExtensions OPTIONAL,
+  certIssueExtensions    SequenceOfCertIssueExtensions OPTIONAL,
+  certRequestExtension   SequenceOfCertRequestExtensions OPTIONAL
 }
 (WITH COMPONENTS { ..., appPermissions PRESENT} |
  WITH COMPONENTS { ..., certIssuePermissions PRESENT} |
@@ -1205,13 +1246,13 @@ EndEntityType ::=
  * Different instances of PsidGroupPermissions within a ToBeSignedCertificate
  * may have different values for eeType.
  *   - If this field indicates app, the chain is allowed to end in an 
- * authorization certificate, i.e., a certficate in which these permissions 
+ * authorization certificate, i.e., a certificate in which these permissions 
  * appear in an appPermissions field (in other words, if the field does not 
  * indicate app and the chain ends in an authorization certificate, the 
  * chain shall be considered invalid).
  *   - If this field indicates enroll, the chain is allowed to end in an 
  * enrollment certificate, i.e., a certificate in which these permissions 
- * appear in a certReqPermissions permissions field (in other words, if the 
+ * appear in a certRequestPermissions permissions field (in other words, if the 
  * field does not indicate enroll and the chain ends in an enrollment 
  * certificate, the chain shall be considered invalid).
  */
@@ -1308,9 +1349,14 @@ Ieee1609HeaderInfoExtensionId ::= ExtId
 p2pcd8ByteLearningRequestId Ieee1609HeaderInfoExtensionId ::= 1
 
 /**
- * @brief This is the ASN.1 Information Object Class that associates IEEE 
+ * @brief This is the ASN.1 Information Object Set that associates IEEE 
  * 1609 HeaderInfo contributed extensions with the appropriate 
  * Ieee1609HeaderInfoExtensionId value.
+ *
+ * In this Information Object Set:
+ * 
+ *   - p2pcd8ByteLearningRequestId identifies that the extension is an 8-byte
+ * peer-to-peer certificate distribution request as specified in 8.4.2.
  */
 Ieee1609HeaderInfoExtensions EXT-TYPE ::= {
   {HashedId8 IDENTIFIED BY p2pcd8ByteLearningRequestId},
@@ -1421,19 +1467,57 @@ CertRequestExtension ::= SEQUENCE {
 
 /**
  * @brief This type is the AppExtension used to identify an operating 
- * organization. The associated CertIssueExtension and CertRequestExtension 
- * are both of type OperatingOrganizationId.
- * To determine consistency between this type and an SPDU, the SDEE 
- * specification for that SPDU is required to specify how the SPDU can be 
- * used to determine an OBJECT IDENTIFIER (for example, by including the 
- * full OBJECT IDENTIFIER in the SPDU, or by including a RELATIVE-OID with 
- * clear instructions about how a full OBJECT IDENTIFIER can be obtained from
- * the RELATIVE-OID). The SPDU is then consistent with this type if the 
- * OBJECT IDENTIFIER determined from the SPDU is identical to the OBJECT 
+ * organization. See 5.2.6.6.7.2 for discussion of how the
+ * OperatingOrganizationId can be integrated into the SPDU payload by an
+ * SDEE specifier.
+ *
+ * A certificate may have an OperatingOrganizationId associated with it even if
+ * the certificate does not contain an OperatingOrganizationId field. If the
+ * certificate does not contain an OperatingOrganizationId field, the
+ * associated OperatingOrganizationId is determined as follows:
+ *
+ *   - If the certificate is self-signed, that is, the choice indicated by the
+ * issuer field in the enclosing certificate structure is self, the
+ * certificate has no OperatingOrganizationId associated with it.
+ *
+ *   -  Otherwise, the certificate has the same OperatingOrganizationId as
+ * the certificate that issued it.
+ *
+ * The above algorithm is applied recursively, i.e. if
+ * OperatingOrganizationId is omitted from the issuing certificate, then
+ * the issuing certificate of that certificate is inspected to determine if
+ * OperatingOrganizationId is present, and so on.
+ *
+ * Consistency with SPDU payload. As discussed in 5.2.6.6.7.2, the SPDU payload
+ * design might or might not include OperatingOrganizationId material. 
+ *
+ * If OperatingOrganizationId material appears in the SPDU payload, then the
+ * SDEE specification is expected to state that consistency is required between
+ * the payload and the certificate (although, as discussed in 5.2.6.6.7.2, this
+ * approach is not recommended).
+ *
+ * If consistency is required between the OperatingOrganizationID
+ * and operating organization information represented by an OBJECT
+ * IDENTIFIER in the SPDU payload, then the SDEE specification for that SPDU is
+ * required to specify how the SPDU can be used to determine an OBJECT
+ * IDENTIFIER of the same length as the OperatingOrganizationId in the
+ * certificate (e.g., by including the full OBJECT IDENTIFIER in the SPDU, or
+ * by including a RELATIVE-OID with clear instructions about how a full OBJECT
+ * IDENTIFIER can be obtained from the RELATIVE-OID, or by truncating an
+ * OBJECT IDENTIFIER from the message to be the same length as the OBJECT
+ * IDENTIFIER in the certificate). The SPDU is then consistent with this type
+ * if the OBJECT IDENTIFIER determined from the SPDU is identical to the OBJECT
  * IDENTIFIER contained in this field.
- * This AppExtension does not have consistency conditions with a 
- * corresponding CertIssueExtension. It can appear in a certificate issued 
- * by any CA.
+ *
+ * Consistency with issuing certificate. This AppExtension does not have
+ * consistency conditions with a corresponding CertIssueExtension. It can
+ * appear in a certificate issued by any CA.
+ *
+ * Consistency with certificate request signing certificate. This AppExtension
+ * does not have consistency conditions with a corresponding
+ * CertRequestExtension. It can appear in a certificate request signed by any
+ * certificate containing certRequestPermissions, i.e. by any enrollment
+ * certificate.
  */
 OperatingOrganizationId ::= OBJECT IDENTIFIER
 
@@ -1443,8 +1527,17 @@ certExtId-OperatingOrganization ExtId ::= 1
  * @brief This Information Object is an instance of the Information Object 
  * Class CERT-EXT-TYPE. It is defined to bind together the AppExtension, 
  * CertIssueExtension, and CertRequestExtension types associated with the 
- * use of an operating organization identifier, and to assocaute them all 
+ * use of an operating organization identifier, and to associate them all 
  * with the extension identifier value certExtId-OperatingOrganization.
+ *
+ * Although the ISSUE and REQUEST entries in this Information Object are
+ * denoted as NULL, this is simply to create a complete instance of the
+ * Information Object. As stated in the definition of
+ * OperatingOrganizationId, there are no consistency conditions between the
+ * OperatingOrganizationId in the appExtensions field and an issuing CA
+ * certificate. As such, a certificate shall not contain a CertIssueExtension
+ * or a CertRequestExtension where the id field is equal to
+ * certExtId-OperatingOrganization. 
  */
 instanceOperatingOrganizationCertExtensions CERT-EXT-TYPE ::= {
   ID      certExtId-OperatingOrganization 
